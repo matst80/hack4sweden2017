@@ -1,7 +1,6 @@
 var inputFile = "./input.json";
 var outputFile = "./parsed.json";
 
-var fs = require('fs');
 var parse = require('csv-parse');
 var fs = require('fs');
 var inputData = require(inputFile);
@@ -21,7 +20,7 @@ function getNode(id) {
 }
 
 function fixChars(val) {
-    return val.toLowerCase().replace(/[åä]/gi, 'a').replace(/[ö]/gi, 'ö').replace(/[^\w\s]/gi, '').replace(/[^\w\s]/gi, '');
+    return val.toLowerCase().replace(/[åä]/gi, 'a').replace(/[ö]/gi, 'o').replace(/[^\w\s]/gi, '').replace(/[^\w\s]/gi, '');
 }
 
 function parseInt(val) {
@@ -58,11 +57,18 @@ var scbFiles = [{
     {
         file: '/data/taxering.csv',
         map: function(row, area, cb) {
-            var key = fixChars(row[0]);
+            var key = fixChars(row[0]).substring(0, 3);
             var val = row[1] - 0;
+            var imap = {
+                "ovr": "tax_other",
+                "320": "tax_hyreshus_bostader",
+                "321": "tax_hyreshus_bostader_lokaler",
+                "322": "tax_hotell_restaurang",
+                "325": "hyreshusenhet_lokaler"
+            };
             if (val == 0)
                 val = row[2] - 0;
-            area[key] = val;
+            area[imap[key]] = val;
             cb();
         }
     },
