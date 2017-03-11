@@ -46,12 +46,14 @@ crap.soklista.sokdata.forEach(function(i, v) {
 });
 
 function updateNodes(d) {
-    var updateIdx = 0;
-    parsedJSON.features.forEach(function(v, i) {
-        if (v.properties["ref:se:kommun:kod"] == d.id)
+    
+    d.forEach(function(v) {
+        var updateIdx = 0;
+    parsedJSON.features.forEach(function(fv, i) {
+        if (fv.properties["ref:se:kommun:kod"] == v.id)
             updateIdx = i;
     });
-    d.forEach(function(v) {
+
         parsedJSON.features[updateIdx].properties.availJobs = v.antal_ledigajobb;
         parsedJSON.features[updateIdx].properties.jobAds = v.antal_platsannonser;
     });
