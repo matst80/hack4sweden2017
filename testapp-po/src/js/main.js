@@ -171,6 +171,18 @@ var handler1 = new ol.interaction.Pointer({
   handleDownEvent: function(e) {
     var t = ol.proj.transform(e.coordinate, 'EPSG:3857', 'EPSG:4326')
     console.log('click on', e, t)
+    map.forEachFeatureAtPixel(e.pixel, function(f) {
+      var prop = f.getProperties()
+      console.log('feature', prop)
+      var propnames = Object.getOwnPropertyNames(prop)
+      var newdata = {}
+      delete(prop.geometry)
+      propnames.forEach(function(k) {
+        newdata[k] = prop[k]
+      })
+      console.log('cleaned', newdata)
+      document.getElementById('overlay').innerText = JSON.stringify(newdata, null, 2)
+    })
   },
   handleMoveEvent: function(e) {
     var t = ol.proj.transform(e.coordinate, 'EPSG:3857', 'EPSG:4326')
@@ -186,7 +198,6 @@ var map = new ol.Map({
         url: 'http://a.tile.stamen.com/toner/{z}/{x}/{y}.png'
       })
     }),
-    // vectorLayer2,
   ],
   target: 'map',
   interactions: ol.interaction.defaults().extend([handler1]),
