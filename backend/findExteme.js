@@ -5,14 +5,9 @@ var keys = [];
 
 function findPercentile(array, percentile) {
     // http://stackoverflow.com/questions/24048879/how-can-i-calculate-the-nth-percentile-from-an-array-of-doubles-in-php
-    array.sort();
-    var index = Math.floor((percentile / 100.0) * array.length);
-    var result;
-    if (Math.floor(index) == index) {
-        result = (array[index - 1] + array[index]) / 2;
-    } else {
-        result = array[index];
-    }
+    var index = Math.floor(percentile * array.length / 100.0);
+    var result = array[index];
+    console.log(percentile, index, array.length, result)
     return result;
 }
 
@@ -37,7 +32,7 @@ for (i in kommun.properties) {
             var values = [];
             inputData.features.forEach(function(curr) {
                 var val = curr.properties[i] - 0;
-                if (val - 0 == val) {
+                if (typeof(val) == 'number') {
                     if (val < obj.min) {
                         //obj.minOBj = curr;
                         obj.min = val;
@@ -53,11 +48,15 @@ for (i in kommun.properties) {
                     values.push(val)
                 }
             });
-            console.log(values.length);
+            values.sort(function(a, b) {
+                return a - b;
+            });
+            // console.log(values.length, values);
             obj.mid = obj.total / obj.count;
             obj.p50 = findPercentile(values, 50.0);
             obj.p75 = findPercentile(values, 75.0);
             obj.p90 = findPercentile(values, 90.0);
+            obj.p95 = findPercentile(values, 95.0);
             obj.p99 = findPercentile(values, 99.0);
             inputData.features.forEach(function(curr) {
                 var val = curr.properties[i] - 0;
