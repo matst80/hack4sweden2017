@@ -148,15 +148,15 @@ function findData(lat, lng, radius) {
     return ret;
 }
 
-router.route('/point/:lat/:lng').get(function(req, res) {
-    var lat = req.params.lat;
-    var lng = req.params.lng;
+router.route('/point').get(function(req, res) {
+    var lat = req.query.lat;
+    var lng = req.query.lng;
     res.json(findData(lat, lng));
 });
 
-router.route('/ball/:lat/:lng').get(function(req, res) {
-    var lat = req.params.lat;
-    var lng = req.params.lng;
+router.route('/ball').get(function(req, res) {
+    var lat = req.query.lat;
+    var lng = req.query.lng;
     res.json(findData(lat, lng, 2));
 });
 
