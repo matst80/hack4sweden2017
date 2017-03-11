@@ -10,10 +10,11 @@ for (i in kommun.properties) {
         if (v - 0 == v) {
             var obj = {
                 key: i,
-                minObj: {},
+                title: i,
+                //minObj: {},
                 min: 999999999999999999999999999,
                 max: 0,
-                maxObj: {},
+                //maxObj: {},
                 count: 0,
                 mid: 0,
                 total: 0
@@ -24,14 +25,14 @@ for (i in kommun.properties) {
                 var val = curr.properties[i] - 0;
                 if (val - 0 == val) {
                     if (val < obj.min) {
-                        obj.minOBj = curr;
+                        //obj.minOBj = curr;
                         obj.min = val;
-                        obj.minName = curr.properties.short_name;
+                        //obj.minName = curr.properties.short_name;
                     }
                     if (val > obj.max) {
-                        obj.maxObj = curr;
+                        //obj.maxObj = curr;
                         obj.max = val;
-                        obj.maxName = curr.properties.short_name;
+                        //obj.maxName = curr.properties.short_name;
                     }
                     obj.total += val;
                     obj.count++;
@@ -49,7 +50,15 @@ for (i in kommun.properties) {
     }
 }
 
-fs.writeFile(outputFile.replace('.json','_diff.json'), JSON.stringify(inputData), function(err) {
+fs.writeFile('./featuredata.json', JSON.stringify(keys), function(err) {
+    if (err) {
+        return console.log(err);
+    }
+
+    console.log("The file was saved!");
+});
+
+fs.writeFile(outputFile.replace('.json', '_diff.json'), JSON.stringify(inputData), function(err) {
     if (err) {
         return console.log(err);
     }

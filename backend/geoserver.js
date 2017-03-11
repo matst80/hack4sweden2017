@@ -1,20 +1,20 @@
 var gju = require('geojson-utils');
 var fs = require('fs');
-//var geodata = require('./parsed_diff.json');
 var proj4 = require('proj4');
+var express = require('express');
+var app = express();
+var bodyParser = require('body-parser');
 
-//var ozon = require('./testapp-po/src/data/ozon.json');
-/*
-var EPSG_3006 = "+proj=utm +zone=33 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs";
-var EPSG_31467 = "+proj=tmerc +lat_0=0 +lon_0=9 +k=1 +x_0=3500000 +y_0=0 +ellps=bessel +datum=potsdam +units=m +no_defs";
-var EPSG_2400 = "+proj=tmerc +lat_0=0 +lon_0=15.80827777777778 +k=1 +x_0=1500000 +y_0=0 +ellps=bessel +units=m +no_defs";
-*/
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
+
+var router = express.Router();
+
 proj4.defs("EPSG:3006", "+proj=utm +zone=33 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs")
 proj4.defs("EPSG:31467", "+proj=tmerc +lat_0=0 +lon_0=9 +k=1 +x_0=3500000 +y_0=0 +ellps=bessel +datum=potsdam +units=m +no_defs")
 proj4.defs("EPSG:2400", "+proj=tmerc +lat_0=0 +lon_0=15.80827777777778 +k=1 +x_0=1500000 +y_0=0 +ellps=bessel +units=m +no_defs")
 
 var targetProj = "EPSG:4326";
-//console.log(ozon.features[0]);
 
 function convert(data, file) {
     data.features.forEach(function(v) {
@@ -96,7 +96,7 @@ var readFiles = [];
 
 files.forEach(function(file) {
 
-    fs.readFile(__dirname + file.file, 'utf8', function(err, data) {
+    fs.readFile(__dirname+'/../' + file.file, 'utf8', function(err, data) {
         if (err) throw err;
         obj = JSON.parse(data);
         readFiles.push(file.file);
@@ -142,3 +142,12 @@ function findData(lat, lng) {
     });*/
     return ret;
 }
+
+router.route('/point/:lat/:lng').get(function(req, res) {
+    var lat = req.params.lat;
+    var lng = req.params.lng;
+    res.json(findData(lat, lng));
+});
+
+app.use('/api', router);
+app.listen(8080);

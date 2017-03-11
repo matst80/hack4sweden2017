@@ -160,7 +160,7 @@ scbFiles.forEach(function(v) {
             });
     });
     if (v.file)
-        fs.createReadStream(__dirname + v.file, 'latin1').pipe(parser).on('end', function() {
+        fs.createReadStream(__dirname + '/../' + v.file, 'latin1').pipe(parser).on('end', function() {
             filesDone.push(v);
             if (filesDone.length == scbFiles.length) {
                 console.log('filedone');
@@ -169,3 +169,4 @@ scbFiles.forEach(function(v) {
             }
         });
 });
+
