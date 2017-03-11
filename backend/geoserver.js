@@ -79,6 +79,11 @@ var files = [{
         from: 'EPSG:3006'
     },
     {
+        file: '/testapp-po/src/data/industri.json',
+        makeRadius: 0.004,
+        //from: 'EPSG:3006'
+    },
+    {
         file: '/testapp-po/src/data/rain.json',
         from: 'EPSG:3006'
     }, {
