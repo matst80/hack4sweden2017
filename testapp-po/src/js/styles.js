@@ -25,6 +25,15 @@ module.exports = {
   'MultiPoint': new ol.style.Style({
     image: image
   }),
+  'Transparent': new ol.style.Style({
+    stroke: new ol.style.Stroke({
+      color: 'rgba(0, 0, 0, 0)',
+      width: 0
+    }),
+    fill: new ol.style.Fill({
+      color: 'rgba(0, 0, 0, 0)'
+    })
+  }),
   'MultiPolygon': new ol.style.Style({
     stroke: new ol.style.Stroke({
       color: 'rgba(255, 255, 0, 1.0)',
