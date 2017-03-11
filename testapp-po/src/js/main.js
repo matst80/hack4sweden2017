@@ -48,11 +48,6 @@ var handler1 = new ol.interaction.Pointer({
     // var t = ol.proj.transform(e.coordinate, 'EPSG:3857', 'EPSG:4326')
     console.log('click on', e.pixel, e.coordinate)
     var p1 = getPixelFeatures(e.pixel[0], e.pixel[1]);
-<<<<<<< HEAD
-    var p2 = getPixelFeatures(e.pixel[0], e.pixel[1]);
-=======
-    // var p2 = getPixelFeatures(e.pixel[0] + 100, e.pixel[1]);
->>>>>>> Korv
     p1.then(function(clean) {
       // p2.then(function(clean2) {
       document.getElementById('overlay').innerText = JSON.stringify(clean, null, 2)
