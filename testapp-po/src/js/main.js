@@ -11,29 +11,27 @@ proj4.defs("EPSG:2400", "+proj=tmerc +lat_0=0 +lon_0=15.80827777777778 +k=1 +x_0
 
 ol.proj.setProj4(proj4)
 
-
-
 var styleFunction = function (feature) {
   return styles[feature.getGeometry().getType()];
 };
 
-
-
-
 function getPixelFeatures(px, py) {
   return new Promise(function(resolve, reject) {
+    var agg = {};
     map.forEachFeatureAtPixel([px, py], function(f) {
       var prop = f.getProperties()
       console.log('feature', prop)
       var propnames = Object.getOwnPropertyNames(prop)
-      var newdata = {}
+      // var newdata = {}
       delete(prop.geometry)
       propnames.forEach(function(k) {
-        newdata[k] = prop[k]
+        agg[k] = prop[k]
       })
-      console.log('cleaned', newdata)
-      resolve(newdata)
     })
+    setTimeout(function(k) {
+      console.log('agg', agg)
+      resolve(agg)
+    }, 300)
   })
 }
 
@@ -47,15 +45,19 @@ function getPixelFeatures(px, py) {
 
 var handler1 = new ol.interaction.Pointer({
   handleDownEvent: function(e) {
-    var t = ol.proj.transform(e.coordinate, 'EPSG:3857', 'EPSG:4326')
-    console.log('click on', e, t)
+    // var t = ol.proj.transform(e.coordinate, 'EPSG:3857', 'EPSG:4326')
+    console.log('click on', e.pixel, e.coordinate)
     var p1 = getPixelFeatures(e.pixel[0], e.pixel[1]);
+<<<<<<< HEAD
     var p2 = getPixelFeatures(e.pixel[0], e.pixel[1]);
+=======
+    // var p2 = getPixelFeatures(e.pixel[0] + 100, e.pixel[1]);
+>>>>>>> Korv
     p1.then(function(clean) {
-      p2.then(function(clean2) {
-        document.getElementById('overlay').innerText = JSON.stringify(clean, null, 2)
-        document.getElementById('overlay2').innerText = JSON.stringify(clean2, null, 2)
-      })
+      // p2.then(function(clean2) {
+      document.getElementById('overlay').innerText = JSON.stringify(clean, null, 2)
+      // document.getElementById('overlay2').innerText = JSON.stringify(clean2, null, 2)
+      // })
     })
   }
 })
@@ -104,7 +106,7 @@ function loadGeoJsonLayer(url, proj, format) {
 }
 
 loadGeoJsonLayer('data/test.json', { featureProjection: 'EPSG:3857' })
-loadGeoJsonLayer('data/drivmedel.json', { dataProjection: 'EPSG:3857' })
+loadGeoJsonLayer('data/drivmedel.json', { dataProjection: 'EPSG:3006', featureProjection: 'EPSG:3857' })
 loadGeoJsonLayer('data/butiker.json', { dataProjection: 'EPSG:3006', featureProjection: 'EPSG:3857' })
 loadGeoJsonLayer('data/smhi.json', { dataProjection: 'EPSG:3006', featureProjection: 'EPSG:3857' })
 loadGeoJsonLayer('data/svavel.json', { dataProjection: 'EPSG:2400', featureProjection: 'EPSG:3857' })
