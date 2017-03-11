@@ -28,7 +28,7 @@ function parseInt(val) {
     if (val - 0 == val)
         return val;
     else
-    return 0;
+        return 0;
 }
 
 var scbFiles = [{
@@ -98,29 +98,30 @@ var scbFiles = [{
             area['fysiskvaldman'] = parseInt(row[1]);
         }
     },
-    /*,
-        {
-            file: '/data/brott.csv',
-            findKey: 'ref:se:kommun:kod',
-            map: function(row, area, cb) {
-                var key = fixChars(row[1]);
-                var val = row[row.length - 1];
-                area[key] = val - 0;
-
-                cb();
-            }
-        },
-        
-        {
-            file: '/data/taxering.csv',
-            findKey: 'ref:se:kommun:kod',
-            map: function(row, area, cb) {
-                var key = fixChars(row[1]);
-                area[key] = row[2] - 0;
-
-                cb();
-            }
-        }*/
+    {
+        file: '/data/pshalsa.csv',
+        map: function(row, area, cb) {
+            ['psykosomatiska', 'nedstamdhet', 'koncentration'].forEach(function(v, i) {
+                area['psyk_' + v.toLocaleLowerCase()] = parseInt(row[i]);
+            });
+        }
+    },
+    {
+        file: '/data/sjalvmord.csv',
+        map: function(row, area, cb) {
+            ['suicidewomen', 'suicidemen', 'suicidetotal'].forEach(function(v, i) {
+                area[v.toLocaleLowerCase()] = parseInt(row[i]);
+            });
+        }
+    },
+    {
+        file: '/data/utb.csv',
+        map: function(row, area, cb) {
+            ['pre_gymnasium_women', 'pre_gymnasium_men', 'pre_gymnasium_total', 'gymnasium_women', 'gymnasium_men', 'gymnasium_total', 'post_gymnasium_women', 'post_gymnasium_men', 'post_gymnasium_total'].forEach(function(v, i) {
+                area['utb_' + v.toLocaleLowerCase()] = parseInt(row[i]);
+            });
+        }
+    }
 ];
 
 function saveFile() {
