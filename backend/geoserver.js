@@ -24,13 +24,15 @@ function convert(data, file) {
             var newcoord = proj4(file.from, targetProj, g.coordinates);
             g.type = "Polygon";
             g.coordinates = [
-                [newcoord[0] - file.makeRadius, newcoord[1] + file.makeRadius],
-                [newcoord[0] + file.makeRadius, newcoord[1] + file.makeRadius],
-                [newcoord[0] + file.makeRadius, newcoord[1] - file.makeRadius],
-                [newcoord[0] - file.makeRadius, newcoord[1] - file.makeRadius],
-                [newcoord[0] - file.makeRadius, newcoord[1] + file.makeRadius]
+                [
+                    [newcoord[0] - file.makeRadius, newcoord[1] + file.makeRadius],
+                    [newcoord[0] + file.makeRadius, newcoord[1] + file.makeRadius],
+                    [newcoord[0] + file.makeRadius, newcoord[1] - file.makeRadius],
+                    [newcoord[0] - file.makeRadius, newcoord[1] - file.makeRadius],
+                    [newcoord[0] - file.makeRadius, newcoord[1] + file.makeRadius]
+                ]
             ];
-            //console.log(g);
+            //console.log(v);
         } else {
             v.geometry.coordinates.forEach(function(coordArr) {
                 coordArr.forEach(function(coordPart) {
@@ -67,16 +69,16 @@ var files = [{
     },
     {
         file: '/testapp-po/src/data/drivmedel.json',
-        makeRadius: 1.0004,
+        makeRadius: 0.004,
         from: 'EPSG:3006'
     },
     {
         file: '/testapp-po/src/data/butiker.json',
-        makeRadius: 1.0004,
+        makeRadius: 0.004,
         from: 'EPSG:3006'
     },
     {
-        file: '/testapp-po/src/data/smhi.json',
+        file: '/testapp-po/src/data/rain.json',
         from: 'EPSG:3006'
     }, {
         file: '/testapp-po/src/data/svavel.json',
@@ -112,17 +114,29 @@ files.forEach(function(file) {
 //convert(ozon, 'EPSG:2400');
 
 
-function findData(lat, lng) {
+function findData(lat, lng, radius) {
     var ret = [];
     files.forEach(function(fil) {
         if (!fil.data) {
             console.log('fel i fil', fil);
         } else {
             var foundData = fil.data.features.filter(function(v) {
-                var part = gju.pointInPolygon({ "type": "Point", "coordinates": [lat, lng] },
-                    v.geometry
-                );
-                return part;
+                if (radius) {
+                    var center = gju.rectangleCentroid({
+                        "type": "Polygon",
+                        "coordinates": [
+                            [
+                                [lat, lng],
+                                [lat, lng]
+                            ]
+                        ]
+                    });
+                    return gju.geometryWithinRadius(v.geometry, center, radius);
+                } else {
+                    return gju.pointInPolygon({ "type": "Point", "coordinates": [lat, lng] },
+                        v.geometry
+                    );
+                }
             });
             if (foundData.length) {
                 ret = ret.concat(foundData);
@@ -130,19 +144,82 @@ function findData(lat, lng) {
             }
         }
     });
-    /*ret = geodata.features.filter(function(v) {
-        return gju.pointInPolygon({ "type": "Point", "coordinates": [lat, 55.39] },
-            v.geometry
-        );
-    });*/
     return ret;
 }
 
 router.route('/point/:lat/:lng').get(function(req, res) {
     var lat = req.params.lat;
     var lng = req.params.lng;
-    //res.json(findData.apply(this, proj4('EPSG:3857', targetProj, [lat, lng])));
     res.json(findData(lat, lng));
+});
+
+router.route('/ball/:lat/:lng').get(function(req, res) {
+    var lat = req.params.lat;
+    var lng = req.params.lng;
+    res.json(findData(lat, lng, 2));
+});
+
+function findRelated(prps) {
+    var ret = [];
+    files.forEach(function(fil) {
+        if (!fil.data) {
+            console.log('fel i fil', fil);
+        } else {
+            console.log('söker i', fil.file);
+            fil.data.features.forEach(function(f) {
+                //var foundData = [];
+                var found = true;
+                for (var prp in prps) {
+                    var val = f.properties[prp];
+                    var filterVal = prps[prp];
+                    if (filterVal) {
+                        if (filterVal * 0.7 < val && filterVal * 1.3 > val) {
+                            console.log('found');
+                        } else
+                            found = false;
+                    } else
+                        found = false;
+                    //console.log(prp, val, prps);
+                }
+                if (found)
+                    ret.push(f);
+                //if (foundData.length) {
+                //  ret = ret.concat(foundData);
+                //console.log('hittat lite data', foundData.length);
+                //}
+            });
+        }
+    });
+    return ret;
+}
+
+router.route('/related').get(function(req, res) {
+    var lat = req.query.lat;
+    var lng = req.query.lng;
+    var fields = req.query.fields.toString().split(',');
+    var prps = {};
+    console.log(req.params);
+    findData(lat, lng).forEach(function(itm) {
+        console.log(itm);
+
+
+        for (var prpidx in fields) {
+            var prp = fields[prpidx];
+            var val = itm.properties[prp];
+            if (val)
+                prps[prp] = val;
+            console.log(prp, val);
+        }
+
+
+    });
+    console.log('matchar på', prps);
+    var ret = {
+        found: prps,
+        related: findRelated(prps)
+    };
+    res.json(ret);
+
 });
 
 app.use('/api', router);
