@@ -19,6 +19,7 @@
     "grunt-contrib-less": "^1.4.1",
     "grunt-contrib-sass": "^1.0.0",
     "grunt-contrib-watch": "^1.0.0",
+    "openlayers": "^4.0.1",
     "polyfill": "^0.1.0",
     "whatwg-fetch": "^2.0.3"
   }
