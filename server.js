@@ -35,6 +35,8 @@ crap.soklista.sokdata.forEach(function(i, v) {
     //console.log('http://api.arbetsformedlingen.se/af/v0/platsannonser/soklista/kommuner?lanid=' + i.id);
     craplist.push({
         host: 'api.arbetsformedlingen.se',
+        baseid: i.id,
+        basename: i.namn,
         port: 80,
         path: '/af/v0/platsannonser/soklista/kommuner?lanid=' + i.id,
         json: true,
@@ -45,15 +47,16 @@ crap.soklista.sokdata.forEach(function(i, v) {
     });
 });
 
-function updateNodes(d) {
-    
+function updateNodes(id, name, d) {
+
     d.forEach(function(v) {
         var updateIdx = 0;
-    parsedJSON.features.forEach(function(fv, i) {
-        if (fv.properties["ref:se:kommun:kod"] == v.id)
-            updateIdx = i;
-    });
-
+        parsedJSON.features.forEach(function(fv, i) {
+            if (fv.properties["ref:se:kommun:kod"] == v.id)
+                updateIdx = i;
+        });
+        parsedJSON.features[updateIdx].properties.lanid = id;
+        parsedJSON.features[updateIdx].properties.lanName = name;
         parsedJSON.features[updateIdx].properties.availJobs = v.antal_ledigajobb;
         parsedJSON.features[updateIdx].properties.jobAds = v.antal_platsannonser;
     });
@@ -86,7 +89,7 @@ function getData() {
             resp.on('end', function() {
                 var kd = JSON.parse(allData);
                 //console.log(kd.soklista.sokdata);
-                updateNodes(kd.soklista.sokdata);
+                updateNodes(r.baseid,r.basename, kd.soklista.sokdata);
                 getData();
             });
         }).on("error", function(e) {
