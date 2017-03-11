@@ -151,12 +151,14 @@ function findData(lat, lng, radius) {
 router.route('/point').get(function(req, res) {
     var lat = req.query.lat;
     var lng = req.query.lng;
+    res.setHeader('Access-Control-Allow-Origin', '*');
     res.json(findData(lat, lng));
 });
 
 router.route('/ball').get(function(req, res) {
     var lat = req.query.lat;
     var lng = req.query.lng;
+    res.setHeader('Access-Control-Allow-Origin', '*');
     res.json(findData(lat, lng, 2));
 });
 
@@ -219,6 +221,7 @@ router.route('/related').get(function(req, res) {
         found: prps,
         related: findRelated(prps)
     };
+    res.setHeader('Access-Control-Allow-Origin', '*');
     res.json(ret);
 
 });
