@@ -1,5 +1,6 @@
 var ol = require('openlayers')
 require('whatwg-fetch')
+var Promise = require('es6-promise')
 
 var styles = require('./styles')
 
@@ -7,11 +8,12 @@ var styleFunction = function (feature) {
   return styles[feature.getGeometry().getType()];
 };
 
-var handler1 = new ol.interaction.Pointer({
-  handleDownEvent: function(e) {
-    var t = ol.proj.transform(e.coordinate, 'EPSG:3857', 'EPSG:4326')
-    console.log('click on', e, t)
-    map.forEachFeatureAtPixel(e.pixel, function(f) {
+
+
+
+function getPixelFeatures(px, py) {
+  return new Promise(function(resolve, reject) {
+    map.forEachFeatureAtPixel([px, py], function(f) {
       var prop = f.getProperties()
       console.log('feature', prop)
       var propnames = Object.getOwnPropertyNames(prop)
@@ -21,13 +23,32 @@ var handler1 = new ol.interaction.Pointer({
         newdata[k] = prop[k]
       })
       console.log('cleaned', newdata)
-      document.getElementById('overlay').innerText = JSON.stringify(newdata, null, 2)
+      resolve(newdata)
     })
-  },
-  // handleMoveEvent: function(e) {
-  //   var t = ol.proj.transform(e.coordinate, 'EPSG:3857', 'EPSG:4326')
-  //   // console.log('e', e, t)
-  // }
+  })
+}
+
+
+
+
+
+
+
+
+
+var handler1 = new ol.interaction.Pointer({
+  handleDownEvent: function(e) {
+    var t = ol.proj.transform(e.coordinate, 'EPSG:3857', 'EPSG:4326')
+    console.log('click on', e, t)
+    var p1 = getPixelFeatures(e.pixel[0], e.pixel[0]);
+    var p2 = getPixelFeatures(e.pixel[0] + 100, e.pixel[0]);
+    p1.then(function(clean) {
+      p2.then(function(clean2) {
+        document.getElementById('overlay').innerText = JSON.stringify(clean, null, 2)
+        document.getElementById('overlay2').innerText = JSON.stringify(clean2, null, 2)
+      })
+    })
+  }
 })
 
 var map = new ol.Map({
@@ -43,11 +64,11 @@ var map = new ol.Map({
   ],
   target: 'map',
   interactions: ol.interaction.defaults().extend([handler1]),
-  controls: ol.control.defaults({
-    attributionOptions: {
-      collapsible: false
-    }
-  }),
+  // controls: ol.control.defaults({
+  //   attributionOptions: {
+  //     collapsible: false
+  //   }
+  // }),
   view: new ol.View({
     center: ol.proj.fromLonLat([15.066667, 62.35]),
     zoom: 5

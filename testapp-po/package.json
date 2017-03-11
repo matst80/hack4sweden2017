@@ -10,6 +10,7 @@
   "license": "ISC",
   "dependencies": {
     "browserify": "^14.1.0",
+    "es6-promise": "^4.1.0",
     "fetch": "^1.1.0",
     "fetch-api": "0.0.2",
     "grunt": "^1.0.1",
