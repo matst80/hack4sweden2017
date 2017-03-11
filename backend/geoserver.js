@@ -24,10 +24,11 @@ function convert(data, file) {
             var newcoord = proj4(file.from, targetProj, g.coordinates);
             g.type = "Polygon";
             g.coordinates = [
-                [newcoord[0] - file.makeRadius, newcoord[1] - file.makeRadius],
                 [newcoord[0] - file.makeRadius, newcoord[1] + file.makeRadius],
+                [newcoord[0] + file.makeRadius, newcoord[1] + file.makeRadius],
                 [newcoord[0] + file.makeRadius, newcoord[1] - file.makeRadius],
-                [newcoord[0] + file.makeRadius, newcoord[1] + file.makeRadius]
+                [newcoord[0] - file.makeRadius, newcoord[1] - file.makeRadius],
+                [newcoord[0] - file.makeRadius, newcoord[1] + file.makeRadius]
             ];
             //console.log(g);
         } else {
@@ -66,12 +67,12 @@ var files = [{
     },
     {
         file: '/testapp-po/src/data/drivmedel.json',
-        makeRadius: 10.0004,
+        makeRadius: 1.0004,
         from: 'EPSG:3006'
     },
     {
         file: '/testapp-po/src/data/butiker.json',
-        makeRadius: 10.0004,
+        makeRadius: 1.0004,
         from: 'EPSG:3006'
     },
     {
@@ -80,23 +81,17 @@ var files = [{
     }, {
         file: '/testapp-po/src/data/svavel.json',
         from: 'EPSG:2400'
+    }, {
+        file: '/testapp-po/src/data/ammonium.json',
+        from: 'EPSG:2400'
     }
 ];
-
-/*
-
-loadGeoJsonLayer('data/drivmedel.json', { dataProjection: 'EPSG:3857' })
-loadGeoJsonLayer('data/butiker.json', { dataProjection: 'EPSG:3006', featureProjection: 'EPSG:3857' })
-loadGeoJsonLayer('data/smhi.json', { dataProjection: 'EPSG:3006', featureProjection: 'EPSG:3857' })
-loadGeoJsonLayer('data/svavel.json', { dataProjection: 'EPSG:2400', featureProjection: 'EPSG:3857' })
-loadGeoJsonLayer('data/ozon.json', { dataProjection: 'EPSG:2400', featureProjection: 'EPSG:3857' })
-*/
 
 var readFiles = [];
 
 files.forEach(function(file) {
 
-    fs.readFile(__dirname+'/../' + file.file, 'utf8', function(err, data) {
+    fs.readFile(__dirname + '/../' + file.file, 'utf8', function(err, data) {
         if (err) throw err;
         obj = JSON.parse(data);
         readFiles.push(file.file);
@@ -107,8 +102,8 @@ files.forEach(function(file) {
             file.data = obj;
 
         if (readFiles.length == files.length) {
-            var found = findData(18.034, 59.09);
-            console.log('hittade', found);
+            //var found = findData(18.034, 59.09);
+            console.log('laddat alla filer');
         }
     });
 });
@@ -131,7 +126,7 @@ function findData(lat, lng) {
             });
             if (foundData.length) {
                 ret = ret.concat(foundData);
-                console.log('hittat lite data', foundData.length);
+                //console.log('hittat lite data', foundData.length);
             }
         }
     });
@@ -146,6 +141,7 @@ function findData(lat, lng) {
 router.route('/point/:lat/:lng').get(function(req, res) {
     var lat = req.params.lat;
     var lng = req.params.lng;
+    //res.json(findData.apply(this, proj4('EPSG:3857', targetProj, [lat, lng])));
     res.json(findData(lat, lng));
 });
 
