@@ -3,6 +3,19 @@ var inputData = require(outputFile);
 var fs = require('fs');
 var keys = [];
 
+function findPercentile(array, percentile) {
+    // http://stackoverflow.com/questions/24048879/how-can-i-calculate-the-nth-percentile-from-an-array-of-doubles-in-php
+    array.sort();
+    var index = Math.floor((percentile / 100.0) * array.length);
+    var result;
+    if (Math.floor(index) == index) {
+        result = (array[index - 1] + array[index]) / 2;
+    } else {
+        result = array[index];
+    }
+    return result;
+}
+
 var kommun = inputData.features[0];
 for (i in kommun.properties) {
     if (i.indexOf(':') == -1) {
@@ -21,6 +34,7 @@ for (i in kommun.properties) {
             };
             keys.push(obj);
             console.log(i);
+            var values = [];
             inputData.features.forEach(function(curr) {
                 var val = curr.properties[i] - 0;
                 if (val - 0 == val) {
@@ -36,9 +50,15 @@ for (i in kommun.properties) {
                     }
                     obj.total += val;
                     obj.count++;
+                    values.push(val)
                 }
             });
+            console.log(values.length);
             obj.mid = obj.total / obj.count;
+            obj.p50 = findPercentile(values, 50.0);
+            obj.p75 = findPercentile(values, 75.0);
+            obj.p90 = findPercentile(values, 90.0);
+            obj.p99 = findPercentile(values, 99.0);
             inputData.features.forEach(function(curr) {
                 var val = curr.properties[i] - 0;
                 if (val - 0 == val) {
