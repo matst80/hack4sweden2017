@@ -13,26 +13,45 @@ proj4.defs("EPSG:3006", "+proj=utm +zone=33 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 
 proj4.defs("EPSG:31467", "+proj=tmerc +lat_0=0 +lon_0=9 +k=1 +x_0=3500000 +y_0=0 +ellps=bessel +datum=potsdam +units=m +no_defs")
 proj4.defs("EPSG:2400", "+proj=tmerc +lat_0=0 +lon_0=15.80827777777778 +k=1 +x_0=1500000 +y_0=0 +ellps=bessel +units=m +no_defs")
 
+var targetProj = "EPSG:4326";
 //console.log(ozon.features[0]);
 
-function convert(data, from) {
+function convert(data, file) {
     data.features.forEach(function(v) {
         //console.log(v.geometry.coordinates[0]);
-        v.geometry.coordinates.forEach(function(coordArr) {
-            coordArr.forEach(function(coordPart) {
-                if (!coordPart[0].length) {
-                    var newcoord = proj4(from, "EPSG:4326", coordPart);
-                    //console.log(newcoord);
-                    coordPart = newcoord;
-                } else {
-                    coordPart.forEach(function(coord) {
-                        var newcoord = proj4(from, "EPSG:4326", coord);
-                        //console.log(newcoord);
-                        coord = newcoord;
-                    });
-                }
+        if (v.geometry.type == "Point") {
+            var g = v.geometry;
+            var newcoord = proj4(file.from, targetProj, g.coordinates);
+            g.type = "Polygon";
+            g.coordinates = [
+                [newcoord[0] - file.makeRadius, newcoord[1] - file.makeRadius],
+                [newcoord[0] - file.makeRadius, newcoord[1] + file.makeRadius],
+                [newcoord[0] + file.makeRadius, newcoord[1] - file.makeRadius],
+                [newcoord[0] + file.makeRadius, newcoord[1] + file.makeRadius]
+            ];
+            //console.log(g);
+        } else {
+            v.geometry.coordinates.forEach(function(coordArr) {
+                coordArr.forEach(function(coordPart) {
+                    //console.log(v.geometry.type);
+
+                    if (v.geometry.type == "Polygon") {
+                        var newcoordPart = proj4(file.from, targetProj, coordPart);
+                        coordPart[0] = newcoordPart[0];
+                        coordPart[1] = newcoordPart[1];
+                    } else if (v.geometry.type == "MultiPolygon") {
+                        coordPart.forEach(function(coord) {
+                            var newcoord = proj4(file.from, targetProj, coord);
+                            coord[0] = newcoord[0];
+                            coord[1] = newcoord[1];
+                        });
+                    }
+                    /*else if (v.geometry.type == "Point") {
+                                       var realCoord = coor
+                                   }*/
+                });
             });
-        });
+        }
     });
     return data;
 }
@@ -42,18 +61,19 @@ var files = [{
         from: 'EPSG:2400'
     },
     {
-        file: '/parsed_diff.json',
-        from: 'EPSG:3857'
+        file: '/parsed_diff.json'
+            //from: 'EPSG:3857'
     },
-    /*{
-           file: '/testapp-po/src/data/drivmedel.json',
-           from: 'EPSG:3006'
-       },*/
-    /* {
-            file: '/testapp-po/src/data/butiker.json',
-            makeRadius: 0.004,
-            from: 'EPSG:3006'
-        }, */
+    {
+        file: '/testapp-po/src/data/drivmedel.json',
+        makeRadius: 10.0004,
+        from: 'EPSG:3006'
+    },
+    {
+        file: '/testapp-po/src/data/butiker.json',
+        makeRadius: 10.0004,
+        from: 'EPSG:3006'
+    },
     {
         file: '/testapp-po/src/data/smhi.json',
         from: 'EPSG:3006'
@@ -82,13 +102,13 @@ files.forEach(function(file) {
         readFiles.push(file.file);
         console.log('parse:', file.file);
         if (file.from)
-            file.data = convert(obj, file.from);
+            file.data = convert(obj, file);
         else
             file.data = obj;
 
         if (readFiles.length == files.length) {
             var found = findData(18.034, 59.09);
-            //console.log('hittade', found);
+            console.log('hittade', found);
         }
     });
 });
