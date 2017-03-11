@@ -1,0 +1,173 @@
+[{
+        "key": "availJobs",
+        "label": "Antal jobb",
+        "type": 1
+    },
+    {
+        "key": "jobAds",
+        "label": "Antal jobbannonser",
+        "type": 1
+    },
+    {
+        "key": "smallHouse",
+        "label": "Småhus",
+        "type": 1
+    },
+    {
+        "key": "apartment",
+        "label": "Flerbostadshus",
+        "type": 1
+    },
+    {
+        "key": "otherHouse",
+        "label": "Övriga bostäder",
+        "type": 1
+    },
+    {
+        "key": "specialHouse",
+        "label": "Special bostäder",
+        "type": 1
+    },
+    {
+        "key": "taxHouse",
+        "label": "Taxeringsvärde hus",
+        "type": 1
+    },
+    {
+        "key": "taxHouseSpace",
+        "label": "Taxeringsvärde hus/lokaler",
+        "type": 1
+    },
+    {
+        "key": "taxRestaurant",
+        "label": "Taxeringsvärde restauranger",
+        "type": 1
+    },
+    {
+        "key": "taxSpace",
+        "label": "Taxeringsvärde lokaler",
+        "type": 1
+    },
+    {
+        "key": "taxOther",
+        "label": "Taxeringsvärde övriga",
+        "type": 1
+    },
+    {
+        "key": "income_18_med",
+        "label": "Medel inkomst 18+",
+        "type": 1
+    },
+    {
+        "key": "income_18_median",
+        "label": "Median inkomst 18+",
+        "type": 1
+    },
+    {
+        "key": "income_18-29_med",
+        "label": "Medel inkomst 18-29",
+        "type": 1
+    },
+    {
+        "key": "income_18-29_median",
+        "label": "Median inkomst 18-29",
+        "type": 1
+    },
+    {
+        "key": "income_30-49_med",
+        "label": "Medel inkomst 30-49",
+        "type": 1
+    },
+    {
+        "key": "income_30-49_median",
+        "label": "Median inkomst 30-49",
+        "type": 1
+    },
+    {
+        "key": "income_50-64_med",
+        "label": "Medel inkomst 50-64",
+        "type": 1
+    },
+    {
+        "key": "income_50-64_median",
+        "label": "Median inkomst 50-64",
+        "type": 1
+    },
+    {
+        "key": "income_65_med",
+        "label": "Medel inkomst 65+",
+        "type": 1
+    },
+    {
+        "key": "income_65_median",
+        "label": "Median inkomst 65+",
+        "type": 1
+    },
+    {
+        "key": "income_65-79_med",
+        "label": "Medel inkomst 65-79",
+        "type": 1
+    },
+    {
+        "key": "income_65-79_median",
+        "label": "Median inkomst 65-79",
+        "type": 1
+    },
+    {
+        "key": "income_80_med",
+        "label": "Medel inkomst 80",
+        "type": 1
+    },
+    {
+        "key": "income_80_median",
+        "label": "Median inkomst 80+",
+        "type": 1
+    }
+    /*
+        ,
+        {
+            "key":"",
+            "label":"",
+            "type":1
+        },
+        {
+            "key":"",
+            "label":"",
+            "type":1
+        },
+        {
+            "key":"",
+            "label":"",
+            "type":1
+        },
+        {
+            "key":"",
+            "label":"",
+            "type":1
+        },
+        {
+            "key":"",
+            "label":"",
+            "type":1
+        },
+        {
+            "key":"",
+            "label":"",
+            "type":1
+        },
+        {
+            "key":"",
+            "label":"",
+            "type":1
+        },
+        {
+            "key":"",
+            "label":"",
+            "type":1
+        },
+        {
+            "key":"",
+            "label":"",
+            "type":1
+        },*/
+]
