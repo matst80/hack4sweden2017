@@ -40,6 +40,12 @@ module.exports = function (grunt) {
           {
             expand: true,
             flatten: true,
+            src: ['src/img/*'],
+            dest: 'build/img/'
+          },
+          {
+            expand: true,
+            flatten: true,
             src: ['src/html/*'],
             dest: 'build/'
           }
