@@ -34,6 +34,13 @@ ready(function () {
             addFeatureCollection(map, data);
         }
     })
+
+    // getJSON("https://maps3.sgu.se/geoserver/wms?SERVICE=WMS&VERSION=1.1.1&REQUEST=GetFeatureInfo&FORMAT=image/png&TRANSPARENT=true&QUERY_LAYERS=misc:SE.GOV.SGU.FORUTSATTNING_SKRED_FINKORNING_JORDART&LAYERS=misc:SE.GOV.SGU.FORUTSATTNING_SKRED_FINKORNING_JORDART&STYLES=&INFO_FORMAT=application/json&FEATURE_COUNT=300&X=50&Y=50&SRS=EPSG:3006&WIDTH=101&HEIGHT=101&BBOX=325511.4712749426,6400698.031506072,328339.4769309539,6403526.037162083", function (data) {
+    //     if (data) {
+    //         console.log("Collections added.");
+    //         addFeatureCollection(map, data);
+    //     }
+    // })
 });
 
 //Get JSON file from url
@@ -79,7 +86,7 @@ function getJSON(url, callback) {
 function addFeatureCollection(map, features) {
     //GeoJSON srouce
     var layerSource = new ol.source.Vector({
-        features: (new ol.format.GeoJSON()).readFeatures(features, { featureProjection: 'EPSG:3857' })
+        features: (new ol.format.GeoJSON()).readFeatures(features, { featureProjection: 'EPSG:3006' })
     });
 
     //Layer
