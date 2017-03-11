@@ -7,6 +7,7 @@ var styles = require('./styles')
 
 proj4.defs("EPSG:3006", "+proj=utm +zone=33 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs")
 proj4.defs("EPSG:31467", "+proj=tmerc +lat_0=0 +lon_0=9 +k=1 +x_0=3500000 +y_0=0 +ellps=bessel +datum=potsdam +units=m +no_defs")
+proj4.defs("EPSG:2400", "+proj=tmerc +lat_0=0 +lon_0=15.80827777777778 +k=1 +x_0=1500000 +y_0=0 +ellps=bessel +units=m +no_defs")
 
 ol.proj.setProj4(proj4)
 
@@ -102,7 +103,9 @@ function loadGeoJsonLayer(url, proj, format) {
   return data;
 }
 
-loadGeoJsonLayer('data/test.json', { featureProjection: 'EPSG:3857'}, {})
-loadGeoJsonLayer('data/drivmedel.json', { dataProjection: 'EPSG:3006', featureProjection: 'EPSG:3857' })
+loadGeoJsonLayer('data/test.json', { featureProjection: 'EPSG:3857' })
+loadGeoJsonLayer('data/drivmedel.json', { dataProjection: 'EPSG:3857' })
 loadGeoJsonLayer('data/butiker.json', { dataProjection: 'EPSG:3006', featureProjection: 'EPSG:3857' })
 loadGeoJsonLayer('data/smhi.json', { dataProjection: 'EPSG:3006', featureProjection: 'EPSG:3857' })
+loadGeoJsonLayer('data/svavel.json', { dataProjection: 'EPSG:2400', featureProjection: 'EPSG:3857' })
+loadGeoJsonLayer('data/ozon.json', { dataProjection: 'EPSG:2400', featureProjection: 'EPSG:3857' })
