@@ -1,3 +1,4 @@
+//Main entry point
 function ready(fn) {
     if (document.readyState != 'loading') {
         fn();
@@ -6,6 +7,7 @@ function ready(fn) {
     }
 }
 
+//Main function
 ready(function () {
     var map = new ol.Map({
         controls: ol.control.defaults(),
@@ -34,6 +36,7 @@ ready(function () {
     })
 });
 
+//Get JSON file from url
 function getJSON(url, callback) {
     var request = new XMLHttpRequest();
     request.open('GET', url, true);
@@ -72,6 +75,7 @@ function getJSON(url, callback) {
     request.send();
 }
 
+//Add feature collection to map
 function addFeatureCollection(map, features) {
     //GeoJSON srouce
     var layerSource = new ol.source.Vector({
