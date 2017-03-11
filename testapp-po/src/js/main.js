@@ -1,8 +1,16 @@
-var ol = require('openlayers')
 require('whatwg-fetch')
+var ol = require('openlayers')
+var proj4 = require('proj4')
 var Promise = require('es6-promise')
 
 var styles = require('./styles')
+
+proj4.defs("EPSG:3006", "+proj=utm +zone=33 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs")
+proj4.defs("EPSG:31467", "+proj=tmerc +lat_0=0 +lon_0=9 +k=1 +x_0=3500000 +y_0=0 +ellps=bessel +datum=potsdam +units=m +no_defs")
+
+ol.proj.setProj4(proj4)
+
+
 
 var styleFunction = function (feature) {
   return styles[feature.getGeometry().getType()];
@@ -76,19 +84,25 @@ var map = new ol.Map({
 });
 
 
-
-fetch('data/test.json').then(function(response) {
-  console.log('response', response);
-  response.json().then(function(json) {
-    console.log('json', json)
-    var gj2 = new ol.format.GeoJSON()
-    var features2 = gj2.readFeatures(json, { featureProjection: 'EPSG:3857' })
-    var vectorSource2 = new ol.source.Vector({ features: features2 })
-    var vectorLayer2 = new ol.layer.Vector({ source: vectorSource2, style: styleFunction })
-    // console.log('vectorLayer2', vectorLayer2)
-    map.addLayer(vectorLayer2)
-    // map.addLayer(vectorLayer)
-    console.log('x')
+function loadGeoJsonLayer(url, proj, format) {
+  var data = {};
+  fetch(url).then(function(response) {
+    console.log('response', response);
+    response.json().then(function(json) {
+      console.log('json', json)
+      var gj2 = new ol.format.GeoJSON()
+      var features2 = gj2.readFeatures(json, proj)
+      console.log('features2', features2)
+      var vectorSource2 = new ol.source.Vector({ features: features2 })
+      var vectorLayer2 = new ol.layer.Vector({ source: vectorSource2, style: styleFunction })
+      map.addLayer(vectorLayer2)
+      data.layer = vectorLayer2;
+    });
   });
-});
+  return data;
+}
 
+loadGeoJsonLayer('data/test.json', { featureProjection: 'EPSG:3857'}, {})
+loadGeoJsonLayer('data/drivmedel.json', { dataProjection: 'EPSG:3006', featureProjection: 'EPSG:3857' })
+loadGeoJsonLayer('data/butiker.json', { dataProjection: 'EPSG:3006', featureProjection: 'EPSG:3857' })
+loadGeoJsonLayer('data/smhi.json', { dataProjection: 'EPSG:3006', featureProjection: 'EPSG:3857' })
