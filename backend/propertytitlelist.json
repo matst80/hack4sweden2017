@@ -1,4 +1,5 @@
 {
+    "chemical": { "title": "Industri utsläpp", "key": "chemical" },
     "BUTIKSNAMN": { "title": "Butik", "key": "BUTIKSNAMN" },
     "Bolag": { "title": "Bolag", "key": "Bolag" },
     "Ozonvalue": { "title": "Marknära ozon", "key": "Ozonvalue" },

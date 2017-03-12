@@ -31,7 +31,6 @@ var targetProj = "EPSG:4326";
 
 function convert(data, file) {
     data.features.forEach(function(v) {
-        //console.log(v.geometry.coordinates[0]);
         if (v.geometry.type == "Point") {
             var g = v.geometry;
             if (file.customProp)
@@ -47,12 +46,9 @@ function convert(data, file) {
                     [newcoord[0] - file.makeRadius, newcoord[1] + file.makeRadius]
                 ]
             ];
-            //console.log(v);
         } else {
             v.geometry.coordinates.forEach(function(coordArr) {
                 coordArr.forEach(function(coordPart) {
-                    //console.log(v.geometry.type);
-
                     if (v.geometry.type == "Polygon") {
                         var newcoordPart = proj4(file.from, targetProj, coordPart);
                         coordPart[0] = newcoordPart[0];
@@ -64,9 +60,6 @@ function convert(data, file) {
                             coord[1] = newcoord[1];
                         });
                     }
-                    /*else if (v.geometry.type == "Point") {
-                                       var realCoord = coor
-                                   }*/
                 });
             });
         }
@@ -97,7 +90,8 @@ var files = [{
     {
         file: '/testapp-po/src/data/industri.json',
         makeRadius: 0.004,
-        //from: 'EPSG:3006'
+        customProp: '1',
+        from: 'EPSG:3006'
     }, {
         file: '/testapp-po/src/data/svavel.json',
         from: 'EPSG:2400'
@@ -161,7 +155,7 @@ files.forEach(function(file) {
                     var val = f.properties[prp] - 0;
                     if (typeof(val) == 'number') {
                         obj.min = Math.min(obj.min, val);
-                        obj.max = Math.min(obj.max, val);
+                        obj.max = Math.max(obj.max, val);
                         obj.total += val;
                         obj.count++;
                         obj.values.push(val);
