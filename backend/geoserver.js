@@ -4,17 +4,17 @@ var proj4 = require('proj4');
 var express = require('express');
 var app = express();
 var bodyParser = require('body-parser');
-/*
+
 var Flickr = require('flickrapi');
 var flickr;
 Flickr.tokenOnly({
-    api_key: 'key',
-    secret: 'secret'
+    api_key: '7a3b4ec69a99a80ce9c3ddd12444b825',
+    secret: 'd0e9f45cb26dad9c'
 }, function(err, flickrObj) {
     console.log(err, flickrObj);
     flickr = flickrObj;
 });
-*/
+
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(express.static('public'))
@@ -337,15 +337,23 @@ router.route('/newsimage').get(function(req, res) {
     flickr.photos.search({
         text: q,
         page: 1,
+        accuracy: 6,
         per_page: 50,
+        content_type: 1,
+        radius: 10,
         lat: lat,
         lng: lng
     }, function(err, result) {
         // result is Flickr's response
         if (err)
             res.json(err);
-        else
-            res.json(result);
+        else {
+
+            var fotodata = result.photos.photo[0];
+            console.log(fotodata);
+            var url = "https://farm" + fotodata.farm + ".staticflickr.com/"+fotodata.server+"/"+fotodata.id+"_"+fotodata.secret+".jpg";
+            res.json({ url: url, data: fotodata });
+        }
     });
 });
 
