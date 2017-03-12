@@ -95,7 +95,8 @@ var handler1 = new ol.interaction.Pointer({
       loadRelatedLayer('/api/related/?lat=' + t[0] + '&lng=' + t[1] + '&fields=' + g_fields.join(','), { featureProjection: 'EPSG:3857' })
       loadPointsLayer('/api/point/?lat=' + t[0] + '&lng=' + t[1], { featureProjection: 'EPSG:3857' })
       overlay3.dispatchEvent(eventShow); //Show fake news
-      var dummydata = "Breaking news!";
+      var dummydata = "Breaking news!"
+      getFlickerImage("kommun", t[0], t[1]);
       populateFakeNews(dummydata);
     })
   }
@@ -116,7 +117,6 @@ var styleFunction = function (override, feature) {
   // if (g_fields.length > 0) {
   //   amount /= g_fields.length;
   // }
-
   // console.log('styleFunction', pr, g_fields, amount);
 
   if (amount > 0.66) { amount = 0.66; }
@@ -208,6 +208,36 @@ function loadPointsLayer(url, proj, style, hidden) {
     });
   });
   return data;
+}
+
+function getFlickerImage(query, lat, lng){
+  let url = "";
+  fetch("/api/newsimage?q="+query+"&lat="+lat+"&lng="+lng).then(function(response) {
+    console.log('response', response);
+    response.json().then(function(json){
+      document.getElementById("newsImage").src = json.url;
+      url.url = json.url;
+    });
+    // response.json().then(function(json) {
+    //   console.log('json', json)
+
+    //   var fcollection = {
+    //     type: 'FeatureCollection',
+    //     features: json 
+    //   };
+
+    //   var gj2 = new ol.format.GeoJSON()
+    //   var features2 = gj2.readFeatures(fcollection, proj)
+    //   console.log('features2', features2)
+    //   var vectorSource2 = new ol.source.Vector({ features: features2 })
+    //   var vectorLayer2 = new ol.layer.Vector({ source: vectorSource2, style: styleFunction.bind(this, style) })
+    //   // vectorLayer2.setVisible(!(hidden || false))
+    //   map.addLayer(vectorLayer2)
+    //   data.layer = vectorLayer2;
+
+    // });
+  });
+  return url;
 }
 
 function loadRelatedLayer(url, proj, style, hidden) {
