@@ -8,6 +8,9 @@ module.exports = function (grunt) {
         files: {
           'build/bundle.js': [
             'src/js/**/*.js'
+          ],
+          '../backend/public/bundle.js': [
+            'src/js/**/*.js'
           ]
         },
         options: {
@@ -22,6 +25,9 @@ module.exports = function (grunt) {
       herpaderp: {
         files: {
           'build/bundle.css': [
+            'src/css/**/*.less'
+          ],
+          '../backend/public/bundle.css': [
             'src/css/**/*.less'
           ]
         }
@@ -48,6 +54,24 @@ module.exports = function (grunt) {
             flatten: true,
             src: ['src/html/*'],
             dest: 'build/'
+          },
+          {
+            expand: true,
+            flatten: true,
+            src: ['src/data/*'],
+            dest: '../backend/public/data/'
+          },
+          {
+            expand: true,
+            flatten: true,
+            src: ['src/img/*'],
+            dest: '../backend/public/img/'
+          },
+          {
+            expand: true,
+            flatten: true,
+            src: ['src/html/*'],
+            dest: '../backend/public/'
           }
         ]
       }
