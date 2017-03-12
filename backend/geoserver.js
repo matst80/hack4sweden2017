@@ -105,66 +105,13 @@ var files = [{
 
 var readFiles = [];
 
+
 var METADATA = JSON.parse(fs.readFileSync('./featuredata.json', 'utf-8'));
 
-var excludedProperties = ['ID', 'Id', 'CELL_ID', 'admin_level'];
 
-var allProperties = {
-    Ozonvalue: { title: '', key: 'Ozonvalue' },
-    admin_level: { title: '', key: 'admin_level' },
-    population: { title: '', key: 'population' },
-    lanid: { title: '', key: 'lanid' },
-    availJobs: { title: '', key: 'availJobs' },
-    jobAds: { title: '', key: 'jobAds' },
-    smahus: { title: '', key: 'smahus' },
-    flerbostadshus: { title: '', key: 'flerbostadshus' },
-    'ovriga hus': { title: '', key: 'ovriga hus' },
-    specialbostader: { title: '', key: 'specialbostader' },
-    rape: { title: '', key: 'rape' },
-    enskildForskolaArbetare: { title: '', key: 'enskildForskolaArbetare' },
-    enskildForskolaArbetarePerBarn: { title: '', key: 'enskildForskolaArbetarePerBarn' },
-    kommunForskolaArbetare: { title: '', key: 'kommunForskolaArbetare' },
-    kommunForskolaArbetarePerBarn: { title: '', key: 'kommunForskolaArbetarePerBarn' },
-    disponibelInkomst: { title: '', key: 'disponibelInkomst' },
-    psyk_psykosomatiska: { title: '', key: 'psyk_psykosomatiska' },
-    psyk_nedstamdhet: { title: '', key: 'psyk_nedstamdhet' },
-    psyk_koncentration: { title: '', key: 'psyk_koncentration' },
-    suicidewomen: { title: '', key: 'suicidewomen' },
-    suicidemen: { title: '', key: 'suicidemen' },
-    suicidetotal: { title: '', key: 'suicidetotal' },
-    utb_pre_gymnasium_women: { title: '', key: 'utb_pre_gymnasium_women' },
-    utb_pre_gymnasium_men: { title: '', key: 'utb_pre_gymnasium_men' },
-    utb_pre_gymnasium_total: { title: '', key: 'utb_pre_gymnasium_total' },
-    utb_gymnasium_women: { title: '', key: 'utb_gymnasium_women' },
-    utb_gymnasium_men: { title: '', key: 'utb_gymnasium_men' },
-    utb_gymnasium_total: { title: '', key: 'utb_gymnasium_total' },
-    utb_post_gymnasium_women: { title: '', key: 'utb_post_gymnasium_women' },
-    utb_post_gymnasium_men: { title: '', key: 'utb_post_gymnasium_men' },
-    income_18_mid: { title: '', key: 'income_18_mid' },
-    income_18_med: { title: '', key: 'income_18_med' },
-    income_1829_mid: { title: '', key: 'income_1829_mid' },
-    income_1829_med: { title: '', key: 'income_1829_med' },
-    income_3049_mid: { title: '', key: 'income_3049_mid' },
-    income_3049_med: { title: '', key: 'income_3049_med' },
-    income_5064_mid: { title: '', key: 'income_5064_mid' },
-    income_5064_med: { title: '', key: 'income_5064_med' },
-    income_65_mid: { title: '', key: 'income_65_mid' },
-    income_65_med: { title: '', key: 'income_65_med' },
-    income_6579_mid: { title: '', key: 'income_6579_mid' },
-    income_6579_med: { title: '', key: 'income_6579_med' },
-    income_80_mid: { title: '', key: 'income_80_mid' },
-    income_80_med: { title: '', key: 'income_80_med' },
-    crime: { title: '', key: 'crime' },
-    tax_hyreshus_bostader: { title: '', key: 'tax_hyreshus_bostader' },
-    tax_hyreshus_bostader_lokaler: { title: '', key: 'tax_hyreshus_bostader_lokaler' },
-    tax_hotell_restaurang: { title: '', key: 'tax_hotell_restaurang' },
-    hyreshusenhet_lokaler: { title: '', key: 'hyreshusenhet_lokaler' },
-    tax_other: { title: '', key: 'tax_other' },
-    fysiskvaldkvinnor: { title: '', key: 'fysiskvaldkvinnor' },
-    fysiskvaldman: { title: '', key: 'fysiskvaldman' },
-    Svavelvalue: { title: '', key: 'Svavelvalue' },
-    Ammonium: { title: '', key: 'Ammonium' }
-};
+var excludedProperties = ['ID', 'Id', 'CELL_ID', 'admin_level', 'lanid'];
+var allProperties = require('./propertytitlelist.json');
+
 
 files.forEach(function(file) {
 
