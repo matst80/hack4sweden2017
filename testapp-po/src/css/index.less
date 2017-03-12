@@ -43,6 +43,7 @@ body {
     bottom: 0px;
     height: 189px;
     width: 354px;
+    right: 200px;
     padding: 0px;
     background-color: rgba(0,0,64,0.8);
     color: #fff;
@@ -59,13 +60,13 @@ body {
 
   .raise {
     -webkit-transition: bottom 2s; /* Safari */
-    transition: bottom 2s;
+    transition: bottom 1s;
     bottom: 0px !important;
   }
 
   .lower {
     -webkit-transition: bottom 2s; /* Safari */
-    transition: bottom 2s;
+    transition: bottom 1s;
     bottom: -213px !important;
   }
 }
@@ -154,6 +155,41 @@ body {
     top: 105px;
     width: 100%;
     display: block;
+}
+
+#fake-news-title {
+    color: white;
+    font-size: 2em;
+    z-index: 200;
+    bottom: 23px;
+    position: absolute;
+    left: 10px;
+    color: black;
+    font-weight: bold;
+}
+
+.marquee {
+    //width: 100%;
+    margin: 0 auto;
+    white-space: nowrap;
+    overflow: hidden;
+    box-sizing: border-box;
+}
+
+.marquee span {
+    display: inline-block;
+    padding-left: 100%;  /* show the marquee just outside the paragraph */
+    animation: marquee 8s linear infinite;
+}
+
+.marquee span:hover {
+    animation-play-state: paused
+}
+
+/* Make it move */
+@keyframes marquee {
+    0%   { transform: translate(0, 0); }
+    100% { transform: translate(-100%, 0); }
 }
 
 .grow { transition: all .1s ease-in-out; }

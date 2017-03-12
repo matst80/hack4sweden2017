@@ -94,6 +94,9 @@ var handler1 = new ol.interaction.Pointer({
       clearLayers();
       loadRelatedLayer('/api/related/?lat=' + t[0] + '&lng=' + t[1] + '&fields=' + g_fields.join(','), { featureProjection: 'EPSG:3857' })
       loadPointsLayer('/api/point/?lat=' + t[0] + '&lng=' + t[1], { featureProjection: 'EPSG:3857' })
+      overlay3.dispatchEvent(eventShow); //Show fake news
+      var dummydata = "Breaking news!";
+      populateFakeNews(dummydata);
     })
   }
 })
@@ -266,6 +269,10 @@ overlay3.addEventListener("fake-news-show", function(){
   removeClass(this,"lower");
   addClass(this,"raise");
 });
+
+function populateFakeNews(title){
+  document.getElementById("fake-news-title").innerHTML = title;
+}
 
 // setTimeout(function(){
 //   overlay3.dispatchEvent(eventShow);
