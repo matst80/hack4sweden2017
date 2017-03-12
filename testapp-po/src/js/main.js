@@ -36,25 +36,20 @@ function getPixelFeatures(px, py) {
   })
 }
 
-
-
-
-
-
-
-
-
 var handler1 = new ol.interaction.Pointer({
+  handleUpEvent: function(e) {
+    var t = ol.proj.transform(e.coordinate, 'EPSG:3857', 'EPSG:4326')
+    console.log('release on', e.pixel, e.coordinate, t)
+  },
   handleDownEvent: function(e) {
     var t = ol.proj.transform(e.coordinate, 'EPSG:3857', 'EPSG:4326')
     console.log('click on', e.pixel, e.coordinate, t)
     var p1 = getPixelFeatures(e.pixel[0], e.pixel[1]);
     p1.then(function(clean) {
-      // p2.then(function(clean2) {
       var grouped = groupIt(clean)
       document.getElementById('overlay').innerText = JSON.stringify(grouped, null, 2)
-      // document.getElementById('overlay2').innerText = JSON.stringify(clean2, null, 2)
-      // })
+      loadPointsLayer('http://localhost:8080/api/point/?lat=' + t[0] + '&lng=' + t[1], { featureProjection: 'EPSG:3857' })
+      loadRelatedLayer('http://localhost:8080/api/related/?lat=' + t[0] + '&lng=' + t[1] + '&fields=income_5064_mid,income_5064_med', { featureProjection: 'EPSG:3857' })
     })
   }
 })
@@ -72,11 +67,6 @@ var map = new ol.Map({
   ],
   target: 'map',
   interactions: ol.interaction.defaults().extend([handler1]),
-  // controls: ol.control.defaults({
-  //   attributionOptions: {
-  //     collapsible: false
-  //   }
-  // }),
   view: new ol.View({
     center: ol.proj.fromLonLat([15.066667, 62.35]),
     zoom: 5
@@ -103,9 +93,61 @@ function loadGeoJsonLayer(url, proj, style, hidden) {
   return data;
 }
 
-loadGeoJsonLayer('data/test.json', { featureProjection: 'EPSG:3857' })
+function loadPointsLayer(url, proj, style, hidden) {
+  var data = {};
+  fetch(url).then(function(response) {
+    console.log('response', response);
+    response.json().then(function(json) {
+      console.log('json', json)
+
+      var fcollection = {
+        type: 'FeatureCollection',
+        features: json 
+      };
+
+      var gj2 = new ol.format.GeoJSON()
+      var features2 = gj2.readFeatures(fcollection, proj)
+      console.log('features2', features2)
+      var vectorSource2 = new ol.source.Vector({ features: features2 })
+      var vectorLayer2 = new ol.layer.Vector({ source: vectorSource2, style: styleFunction.bind(this, style) })
+      // vectorLayer2.setVisible(!(hidden || false))
+      map.addLayer(vectorLayer2)
+      data.layer = vectorLayer2;
+
+    });
+  });
+  return data;
+}
+
+function loadRelatedLayer(url, proj, style, hidden) {
+  var data = {};
+  fetch(url).then(function(response) {
+    console.log('response', response);
+    response.json().then(function(json) {
+      console.log('json', json)
+
+      var fcollection = {
+        type: 'FeatureCollection',
+        features: json.related 
+      };
+
+      var gj2 = new ol.format.GeoJSON()
+      var features2 = gj2.readFeatures(fcollection, proj)
+      console.log('features2', features2)
+      var vectorSource2 = new ol.source.Vector({ features: features2 })
+      var vectorLayer2 = new ol.layer.Vector({ source: vectorSource2, style: styleFunction.bind(this, style) })
+      // vectorLayer2.setVisible(!(hidden || false))
+      map.addLayer(vectorLayer2)
+      data.layer = vectorLayer2;
+
+    });
+  });
+  return data;
+}
+
+// loadGeoJsonLayer('data/test.json', { featureProjection: 'EPSG:3857' })
 // loadGeoJsonLayer('data/drivmedel.json', { dataProjection: 'EPSG:3006', featureProjection: 'EPSG:3857' })
 // loadGeoJsonLayer('data/butiker.json', { dataProjection: 'EPSG:3006', featureProjection: 'EPSG:3857' })
 // loadGeoJsonLayer('data/smhi.json', { dataProjection: 'EPSG:3006', featureProjection: 'EPSG:3857' }, 'Transparent' )
 // loadGeoJsonLayer('data/svavel.json', { dataProjection: 'EPSG:2400', featureProjection: 'EPSG:3857' }, 'Transparent' )
-loadGeoJsonLayer('data/ozon.json', { dataProjection: 'EPSG:2400', featureProjection: 'EPSG:3857' }, undefined, true )
+// loadGeoJsonLayer('data/ozon.json', { dataProjection: 'EPSG:2400', featureProjection: 'EPSG:3857' }, undefined, true )
