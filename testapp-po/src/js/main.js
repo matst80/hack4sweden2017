@@ -87,18 +87,19 @@ var handler1 = new ol.interaction.Pointer({
   handleDownEvent: function(e) {
     var t = ol.proj.transform(e.coordinate, 'EPSG:3857', 'EPSG:4326')
     console.log('click on', e.pixel, e.coordinate, t)
-    var p1 = getPixelFeatures(e.pixel[0], e.pixel[1]);
-    p1.then(function(clean) {
-      var grouped = groupIt(clean)
-      document.getElementById('overlay').innerText = JSON.stringify(grouped, null, 2)
-      clearLayers();
-      loadRelatedLayer('/api/related/?lat=' + t[0] + '&lng=' + t[1] + '&fields=' + g_fields.join(','), { featureProjection: 'EPSG:3857' })
-      loadPointsLayer('/api/point/?lat=' + t[0] + '&lng=' + t[1], { featureProjection: 'EPSG:3857' })
-      overlay3.dispatchEvent(eventShow); //Show fake news
-      var dummydata = "Breaking news!"
-      getFlickerImage("kommun", t[0], t[1]);
-      populateFakeNews(dummydata);
+    clearLayers();
+    loadRelatedLayer('/api/related/?lat=' + t[0] + '&lng=' + t[1] + '&fields=' + g_fields.join(','), { featureProjection: 'EPSG:3857' })
+    loadPointsLayer('/api/point/?lat=' + t[0] + '&lng=' + t[1], { featureProjection: 'EPSG:3857' }).then(function(x) {
+      getPixelFeatures(e.pixel[0], e.pixel[1]).then(function(clean) {
+        console.log('cleaned pixel features', clean)
+        var grouped = groupIt(clean)
+        document.getElementById('overlay').innerText = JSON.stringify(grouped, null, 2)
+        overlay3.dispatchEvent(eventShow); //Show fake news
+        var dummydata = "Breaking news!"
+        populateFakeNews(dummydata);
+      })
     })
+    getFlickerImage("kommun", t[0], t[1]);
   }
 })
 
@@ -171,7 +172,6 @@ var map = new ol.Map({
 
 
 function loadGeoJsonLayer(url, proj, style, hidden) {
-  var data = {};
   fetch(url).then(function(response) {
     console.log('response', response);
     response.json().then(function(json) {
@@ -183,36 +183,33 @@ function loadGeoJsonLayer(url, proj, style, hidden) {
       var vectorLayer2 = new ol.layer.Vector({ source: vectorSource2, style: styleFunction.bind(this, style) })
       // vectorLayer2.setVisible(!(hidden || false))
       map.addLayer(vectorLayer2)
-      data.layer = vectorLayer2;
     });
   });
-  return data;
 }
 
 function loadPointsLayer(url, proj, style, hidden) {
-  var data = {};
-  fetch(url).then(function(response) {
-    console.log('response', response);
-    response.json().then(function(json) {
-      console.log('json', json)
+  return new Promise(function(resolve, reject) {
+    fetch(url).then(function(response) {
+      console.log('response', response);
+      response.json().then(function(json) {
+        console.log('json', json)
 
-      var fcollection = {
-        type: 'FeatureCollection',
-        features: json 
-      };
+        var fcollection = {
+          type: 'FeatureCollection',
+          features: json 
+        };
 
-      var gj2 = new ol.format.GeoJSON()
-      var features2 = gj2.readFeatures(fcollection, proj)
-      console.log('features2', features2)
-      var vectorSource2 = new ol.source.Vector({ features: features2 })
-      var vectorLayer2 = new ol.layer.Vector({ source: vectorSource2, style: styleFunction.bind(this, style) })
-      // vectorLayer2.setVisible(!(hidden || false))
-      map.addLayer(vectorLayer2)
-      data.layer = vectorLayer2;
-
+        var gj2 = new ol.format.GeoJSON()
+        var features2 = gj2.readFeatures(fcollection, proj)
+        console.log('features2', features2)
+        var vectorSource2 = new ol.source.Vector({ features: features2 })
+        var vectorLayer2 = new ol.layer.Vector({ source: vectorSource2, style: styleFunction.bind(this, style) })
+        // vectorLayer2.setVisible(!(hidden || false))
+        map.addLayer(vectorLayer2)
+        setTimeout(resolve, 200);
+      });
     });
   });
-  return data;
 }
 
 function getFlickerImage(query, lat, lng){
