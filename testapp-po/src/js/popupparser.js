@@ -1,8 +1,8 @@
 module.exports = function(input) {
     var popup = {
-        showInfo: function(data) {
-            console.log('showinfo ', data);
-        }
+
     };
+    console.log('popupdata', input);
+    input.elm.innerHTML = '<h2>data</h2>';
     return popup;
 }
