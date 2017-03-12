@@ -90,7 +90,7 @@ var files = [{
     {
         file: '/testapp-po/src/data/industri.json',
         makeRadius: 0.004,
-        customProp: '1',
+        customProp: 'chemical',
         from: 'EPSG:3006'
     }, {
         file: '/testapp-po/src/data/svavel.json',
