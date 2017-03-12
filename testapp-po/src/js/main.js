@@ -36,11 +36,17 @@ function getPixelFeatures(px, py) {
   })
 }
 
+function clearLayers() {
+  console.log('map', map)
+  var layers = map.getLayers()
+  var num = layers.length
+  console.log('number of layers', num)
+  for (var i = num - 1; i >= 1; i--) {
+    map.removeLayer(layers.item(i))
+  }
+}
+
 var handler1 = new ol.interaction.Pointer({
-  // handleUpEvent: function(e) {
-  //   var t = ol.proj.transform(e.coordinate, 'EPSG:3857', 'EPSG:4326')
-  //   console.log('release on', e.pixel, e.coordinate, t)
-  // },
   handleDownEvent: function(e) {
     var t = ol.proj.transform(e.coordinate, 'EPSG:3857', 'EPSG:4326')
     console.log('click on', e.pixel, e.coordinate, t)
@@ -48,6 +54,7 @@ var handler1 = new ol.interaction.Pointer({
     p1.then(function(clean) {
       var grouped = groupIt(clean)
       document.getElementById('overlay').innerText = JSON.stringify(grouped, null, 2)
+      clearLayers();
       loadPointsLayer('http://localhost:8080/api/point/?lat=' + t[0] + '&lng=' + t[1], { featureProjection: 'EPSG:3857' })
       loadRelatedLayer('http://localhost:8080/api/related/?lat=' + t[0] + '&lng=' + t[1] + '&fields=income_5064_mid,income_5064_med', { featureProjection: 'EPSG:3857' })
     })
