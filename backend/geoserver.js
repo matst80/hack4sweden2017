@@ -304,28 +304,46 @@ function findRelated(prps) {
             console.log('söker i', fil.file);
             fil.data.features.forEach(function(f) {
                 //var foundData = [];
-                var found = true;
+                var found = false;
                 for (var prp in prps) {
                     var val = f.properties[prp];
                     var filterVal = prps[prp];
-                    if (filterVal) {
-                        if (filterVal * 0.85 < val && filterVal * 1.15 > val) {
-                            console.log('found');
-                        } else
-                            found = false;
-                    } else
-                        found = false;
-                    //console.log(prp, val, prps);
+                    var prps3 = allProperties[prp]
+                    if (val) {
+                        found = true;
+                        // if (val > filterVal) {
+                        // console.log('found');
+                        // } else {
+                        // found = false;
+                        // }
+                    }
                 }
-                if (found)
+                if (found) {
                     ret.push(f);
-                //if (foundData.length) {
-                //  ret = ret.concat(foundData);
-                //console.log('hittat lite data', foundData.length);
-                //}
+                }
             });
         }
     });
+    var mins = {};
+    var maxs = {};
+    ret.forEach(function(f) {
+        for (var prp in prps) { 
+            var val = f.properties[prp] || 0;
+            mins[prp] = Math.min(mins[prp] || 999999999999999, val)
+            maxs[prp] = Math.max(maxs[prp] || 0, val)
+        }
+    })
+    console.log(mins, maxs)
+    ret.forEach(function(f) {
+        for (var prp in prps) {
+            var val = f.properties[prp];
+            if (val) {
+                val = (val - mins[prp]) / (maxs[prp] - mins[prp])
+                f.properties[prp + '_normalized'] = val
+            }
+        }
+    })
+
     return ret;
 }
 
@@ -380,11 +398,10 @@ router.route('/related').get(function(req, res) {
             var prp = fields[prpidx];
             var val = 0;
             // if (val)
-            METADATA.forEach(function(md) {
-                if (md.key == prp) {
-                    val = md.p99;
-                }
-            })
+            var prp2 = allProperties[prp]
+            if (prp2) {
+                val = prp2.p95;
+            }
             prps[prp] = val;
             console.log(prp, val);
         }

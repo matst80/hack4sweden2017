@@ -105,16 +105,21 @@ var styleFunction = function (override, feature) {
   var pr = feature.getProperties()
 
   var amount = 0;
+
   g_fields.forEach(function(k) {
-    amount += pr[k] / g_metadata[k].p99;
+    var k2 = k + '_normalized'
+    if (pr[k2]) {
+      amount += pr[k2]
+    }
   });
-  if (g_fields.length > 0) {
-    amount /= g_fields.length;
-  }
 
-  console.log('styleFunction', pr, g_fields, amount);
+  // if (g_fields.length > 0) {
+  //   amount /= g_fields.length;
+  // }
 
-  if (amount > 0.7) { amount = 0.7; }
+  // console.log('styleFunction', pr, g_fields, amount);
+
+  if (amount > 0.66) { amount = 0.66; }
   if (amount < 0.0) { amount = 0.0; }
 
   return new ol.style.Style({
@@ -123,7 +128,7 @@ var styleFunction = function (override, feature) {
     //   width: 0
     // }),
     fill: new ol.style.Fill({
-      color: 'rgba(255, 255, 255, ' + amount + ')'
+      color: 'rgba(255, 255, 0, ' + amount + ')'
     })
   })
 
@@ -141,7 +146,7 @@ var styleFunction = function (override, feature) {
 };
 
 var map = new ol.Map({
-  renderer: 'webgl',
+  // renderer: 'webgl',
   layers: [
     new ol.layer.Tile({
       source: new ol.source.OSM({
