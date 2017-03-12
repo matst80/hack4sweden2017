@@ -1,7 +1,8 @@
 module.exports = function(input) {
-    console.log(input);
-    return function(data) {
-        data.elm.innerHTML = 'sklep';
+    var popup = {
+        showInfo: function(data) {
+            console.log('showinfo ', data);
+        }
     };
-    
+    return popup;
 }
