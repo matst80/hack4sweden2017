@@ -208,3 +208,42 @@ function loadRelatedLayer(url, proj, style, hidden) {
 // loadGeoJsonLayer('data/smhi.json', { dataProjection: 'EPSG:3006', featureProjection: 'EPSG:3857' }, 'Transparent' )
 // loadGeoJsonLayer('data/svavel.json', { dataProjection: 'EPSG:2400', featureProjection: 'EPSG:3857' }, 'Transparent' )
 // loadGeoJsonLayer('data/ozon.json', { dataProjection: 'EPSG:2400', featureProjection: 'EPSG:3857' }, undefined, true )
+
+function addClass(el, className) {
+  if (el.classList)
+    el.classList.add(className);
+  else
+    el.className += ' ' + className;
+}
+
+function removeClass(el, className) {
+  if (el.classList)
+    el.classList.remove(className);
+  else
+    el.className = el.className.replace(new RegExp('(^|\\b)' + className.split(' ').join('|') + '(\\b|$)', 'gi'), ' ');
+}
+
+var overlay3 = document.getElementById("overlay3");
+
+var eventHide = new CustomEvent('fake-news-hide', {bubbles: true, cancelable: true});
+var eventShow = new CustomEvent('fake-news-show', {bubbles: true, cancelable: true});
+
+overlay3.addEventListener("fake-news-hide", function(){
+  console.log("Fake news hide!!",this);
+  removeClass(this,"raise");
+  addClass(this,"lower");
+  
+});
+
+overlay3.addEventListener("fake-news-show", function(){
+  console.log("Fake news show!!",this);
+  removeClass(this,"lower");
+  addClass(this,"raise");
+});
+
+// setTimeout(function(){
+//   overlay3.dispatchEvent(eventShow);
+//   setTimeout(function(){
+//     overlay3.dispatchEvent(eventHide);
+//   },4000);
+// },4000);

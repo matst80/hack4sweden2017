@@ -36,6 +36,38 @@ body {
     background-color: rgba(0,0,64,0.8);
     color: #fff;
   }
+
+  #overlay3 {
+    position: absolute;
+    margin: 0;
+    bottom: 0px;
+    height: 189px;
+    width: 354px;
+    padding: 0px;
+    background-color: rgba(0,0,64,0.8);
+    color: #fff;
+    overflow: hidden;
+  }
+  #newsFrame {
+    width: 379px;
+    height: 213px;
+    z-index: 2;
+    left: -25px;
+    top: -12px;
+    position: absolute;
+  }
+
+  .raise {
+    -webkit-transition: bottom 2s; /* Safari */
+    transition: bottom 2s;
+    bottom: 0px !important;
+  }
+
+  .lower {
+    -webkit-transition: bottom 2s; /* Safari */
+    transition: bottom 2s;
+    bottom: -213px !important;
+  }
 }
 
 #menu {
@@ -57,7 +89,7 @@ body {
 #scenario-panel {
   position: absolute;
   right: 0px;
-  min-width: 300px;
+  min-width: 120px;
   width: 10%;
   height: 100%;
   margin: -10px;
@@ -68,8 +100,8 @@ body {
 .round-pic {
   display: block;
   margin: 0 auto;
-  width: 200px;
-  height: 200px;
+  width: 100px;
+  height: 100px;
   border-radius: 150px;
   -webkit-border-radius: 150px;
   -moz-border-radius: 150px;
@@ -87,7 +119,7 @@ body {
 
 .avatar.alg {
   background-size: 260% !important;
-  background-position: -70px -190px  !important;
+  background-position: -35px -95px  !important;
   background: url(img/älg.jpg) no-repeat;
 }
 
@@ -97,7 +129,7 @@ body {
 
 .avatar.regn {
   background-size: 160% !important;
-  background-position: -60px -10px  !important;
+  background-position: -30px -5px  !important;
   background: url(img/regn.jpg) no-repeat;
 }
 
@@ -105,7 +137,7 @@ body {
     color: #ecf0f1;
     margin: 0 auto;
     text-align: center;
-    font-size: 3em;
+    font-size: 1.5em;
     position: relative;
     top: -10px;
     width: 100%;
@@ -117,9 +149,9 @@ body {
     color: #ecf0f1;
     margin: 0 auto;
     text-align: center;
-    font-size: 3em;
+    font-size: 1.5em;
     position: relative;
-    top: 210px;
+    top: 105px;
     width: 100%;
     display: block;
 }
