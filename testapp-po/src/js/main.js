@@ -39,7 +39,8 @@ function getPixelFeatures(px, py) {
 function clearLayers() {
   console.log('map', map)
   var layers = map.getLayers()
-  var num = layers.length
+  console.log('layers', layers)
+  var num = layers.getLength()
   console.log('number of layers', num)
   for (var i = num - 1; i >= 1; i--) {
     map.removeLayer(layers.item(i))
