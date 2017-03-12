@@ -110,14 +110,19 @@ var styleFunction = function (override, feature) {
   g_fields.forEach(function(k) {
     var k2 = k + '_normalized'
     if (pr[k2]) {
-      amount += pr[k2]
+      amount += pr[k2] * pr[k2]
     }
   });
 
-  // if (g_fields.length > 0) {
-  //   amount /= g_fields.length;
-  // }
+  if (g_fields.length > 0) {
+    amount /= g_fields.length;
+  }
+
+  amount *= 2.0;
+
   // console.log('styleFunction', pr, g_fields, amount);
+
+  amount -= 0.6;
 
   if (amount > 0.66) { amount = 0.66; }
   if (amount < 0.0) { amount = 0.0; }
