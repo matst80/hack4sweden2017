@@ -37,10 +37,10 @@ function getPixelFeatures(px, py) {
 }
 
 var handler1 = new ol.interaction.Pointer({
-  handleUpEvent: function(e) {
-    var t = ol.proj.transform(e.coordinate, 'EPSG:3857', 'EPSG:4326')
-    console.log('release on', e.pixel, e.coordinate, t)
-  },
+  // handleUpEvent: function(e) {
+  //   var t = ol.proj.transform(e.coordinate, 'EPSG:3857', 'EPSG:4326')
+  //   console.log('release on', e.pixel, e.coordinate, t)
+  // },
   handleDownEvent: function(e) {
     var t = ol.proj.transform(e.coordinate, 'EPSG:3857', 'EPSG:4326')
     console.log('click on', e.pixel, e.coordinate, t)
