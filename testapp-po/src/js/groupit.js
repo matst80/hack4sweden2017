@@ -877,6 +877,8 @@ module.exports = function(input) {
             fieldinfo.min = md.min
             fieldinfo.avg = md.p95
             fieldinfo.max = md.max
+            fieldinfo.p95 = md.p95
+            fieldinfo.p50 = md.p50
             grouped.sorted.push(fieldinfo)
         }
     })

@@ -1,6 +1,6 @@
 //param1 param2 geo1 geo2
 
-var params = {
+meningsbyggnad = {
     "admin_level": "administratörsnivå",
     "population": "befolkmingsmängd",
     "lanid": "län-ID",
@@ -104,9 +104,10 @@ function getDirWord2(up) {
 // }
 
 //De två högsta värdena för denna kommun kommer in här.
-function generateSentence(param1, param2, val1, val2, geo, p95_1, p50_1, p95_2, p50_2) {
-    var par1 = params[param1];
-    var par2 = params[param2];
+generateSentence = function(param1, param2, val1, val2, geo, p95_1, p50_1, p95_2, p50_2) {
+    var par1 = meningsbyggnad[param1];
+    var par2 = meningsbyggnad[param2];
+    console.log("AAA");
 
     var sentences = [];
 
@@ -116,9 +117,8 @@ function generateSentence(param1, param2, val1, val2, geo, p95_1, p50_1, p95_2, 
     var f1 = "";
     var f2 = "";
     var f3 = "";
-    var f4 = "";
-    var f5 = "";
 
+    console.log("BBB");
     if ((up1 && up2) || (!up1 && !up2)) {
         f1 = capitalizeFirstLetter(par1) + " och " + par2 + " " + getDirWord2(up1) + " i " + geo;
         f2 = capitalizeFirstLetter(getDirWord1(up1)) + " " + par1 + " och " + getDirWord1(up2) + " " + par2 + " i " + geo;
@@ -135,6 +135,7 @@ function generateSentence(param1, param2, val1, val2, geo, p95_1, p50_1, p95_2, 
         f3 = capitalizeFirstLetter(par1) + " " + getDirWord2(up1) + " i " + geo;
     }
 
+    console.log("CCC");
     // f2 = capitalizeFirstLetter(param2)+"  "+getDirWord(up)
     // f3 = capitalizeFirstLetter(param3)+"  "+getDirWord(up)
     // f4 = capitalizeFirstLetter(param4)+"  "+getDirWord(up)
@@ -150,7 +151,9 @@ function generateSentence(param1, param2, val1, val2, geo, p95_1, p50_1, p95_2, 
     sentences.push(f1);
     sentences.push(f2);
     sentences.push(f3);
-    return sentences;
+    var index = Math.floor(Math.random() * sentences.length);
+    console.log("DDD");
+    return sentences[index];
 }
 
 function main() {
@@ -164,13 +167,13 @@ function main() {
     var p95_2 = 10;
     var p50_2 = 2;
 
-    var index1 = Math.floor(Math.random() * Object.keys(params).length);
-    var randParam1 = Object.keys(params)[index1];
-    var index2 = Math.floor(Math.random() * Object.keys(params).length);
+    var index1 = Math.floor(Math.random() * Object.keys(meningsbyggnad).length);
+    var randParam1 = Object.keys(meningsbyggnad)[index1];
+    var index2 = Math.floor(Math.random() * Object.keys(meningsbyggnad).length);
     if(index1 == index2){
         index2 += 1;
     }
-    var randParam2 = Object.keys(params)[index2];
+    var randParam2 = Object.keys(meningsbyggnad)[index2];
 
     randVal1 = Math.floor(Math.random() * 100);
     randVal2 = Math.floor(Math.random() * 100);
@@ -179,5 +182,3 @@ function main() {
     var indexRes = Math.floor(Math.random() * res.length);
     console.log(res[indexRes]);
 }
-
-main();

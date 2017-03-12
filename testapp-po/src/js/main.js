@@ -95,8 +95,25 @@ var handler1 = new ol.interaction.Pointer({
         var grouped = groupIt(clean)
         document.getElementById('overlay').innerText = JSON.stringify(grouped, null, 2)
         overlay3.dispatchEvent(eventShow); //Show fake news
-        var dummydata = "Breaking news!"
-        populateFakeNews(dummydata);
+
+        var filteredData = grouped.sorted.filter(function(o){
+          return (o.name !== "lanid" && o.name !== "admin_level");
+        });
+        if(filteredData[0] && filteredData[1]){
+          var par1 = filteredData[0].key;
+          var par2 = filteredData[1].key;
+          var val1 = filteredData[0].value;
+          var val2 = filteredData[1].value;
+          var geo = clean.name;
+          var p95_1 = filteredData[0].p95;
+          var p50_1 = filteredData[0].p50;
+          var p95_2 = filteredData[1].p95;
+          var p50_2 = filteredData[1].p50;
+          var sent1 = generateSentence(par1,par2,val1,val2,geo,p95_1,p50_1,p95_2,p50_2)
+          populateFakeNews(sent1+".")
+          getFlickerImage("kommun", t[0], t[1])
+          overlay3.dispatchEvent(eventShow) //Show fake news
+        }
       })
     })
     getFlickerImage("kommun", t[0], t[1]);
