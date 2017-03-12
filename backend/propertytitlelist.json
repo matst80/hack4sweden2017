@@ -1,4 +1,6 @@
 {
+    "BUTIKSNAMN": { "title": "Butik", "key": "BUTIKSNAMN" },
+    "Bolag": { "title": "Bolag", "key": "Bolag" },
     "Ozonvalue": { "title": "Marknära ozon", "key": "Ozonvalue" },
     "population": { "title": "befolkmingsmängd", "key": "population" },
     "availJobs": { "title": "antal lediga jobb", "key": "availJobs" },

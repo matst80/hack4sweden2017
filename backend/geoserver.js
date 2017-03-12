@@ -34,6 +34,8 @@ function convert(data, file) {
         //console.log(v.geometry.coordinates[0]);
         if (v.geometry.type == "Point") {
             var g = v.geometry;
+            if (file.customProp)
+                v.properties[file.customProp] = 1;
             var newcoord = proj4(file.from, targetProj, g.coordinates);
             g.type = "Polygon";
             g.coordinates = [
@@ -83,11 +85,13 @@ var files = [{
     {
         file: '/testapp-po/src/data/drivmedel.json',
         makeRadius: 0.004,
+        customProp: 'Bolag',
         from: 'EPSG:3006'
     },
     {
         file: '/testapp-po/src/data/butiker.json',
         makeRadius: 0.004,
+        customProp: 'BUTIKSNAMN',
         from: 'EPSG:3006'
     },
     {
@@ -106,7 +110,7 @@ var files = [{
 var readFiles = [];
 
 
-var METADATA = JSON.parse(fs.readFileSync('./featuredata.json', 'utf-8'));
+//var METADATA = JSON.parse(fs.readFileSync('./featuredata.json', 'utf-8'));
 
 
 var excludedProperties = ['ID', 'Id', 'CELL_ID', 'admin_level', 'lanid'];
@@ -141,10 +145,11 @@ files.forEach(function(file) {
         obj = JSON.parse(data);
         readFiles.push(file.file);
         console.log('parse:', file.file);
-        if (file.from)
+        if (file.from) {
             file.data = convert(obj, file);
-        else
+        } else {
             file.data = obj;
+        }
 
 
 
@@ -163,7 +168,7 @@ files.forEach(function(file) {
                     }
 
                 }
-                /*if (excludedProperties.indexOf(prp) == -1 && prp.indexOf(':') == -1 && prp.indexOf('_diff') == -1) {
+                if (!allProperties[prp] && excludedProperties.indexOf(prp) == -1 && prp.indexOf(':') == -1 && prp.indexOf('_diff') == -1) {
                     var val = f.properties[prp];
                     if (val && val - 0 == val) {
                         if (!allProperties[prp]) {
@@ -173,7 +178,7 @@ files.forEach(function(file) {
                             };
                         }
                     }
-                }*/
+                }
             }
         });
         if (readFiles.length == files.length) {
