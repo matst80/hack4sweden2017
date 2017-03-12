@@ -12,10 +12,6 @@ proj4.defs("EPSG:2400", "+proj=tmerc +lat_0=0 +lon_0=15.80827777777778 +k=1 +x_0
 
 ol.proj.setProj4(proj4)
 
-var styleFunction = function (override, feature) {
-  return styles[override || feature.getGeometry().getType()];
-};
-
 function getPixelFeatures(px, py) {
   return new Promise(function(resolve, reject) {
     var agg = {};
@@ -47,6 +43,8 @@ function clearLayers() {
   }
 }
 
+var g_fields = ['income_5064_mid', 'income_5064_med'];
+
 var handler1 = new ol.interaction.Pointer({
   handleDownEvent: function(e) {
     var t = ol.proj.transform(e.coordinate, 'EPSG:3857', 'EPSG:4326')
@@ -57,10 +55,23 @@ var handler1 = new ol.interaction.Pointer({
       document.getElementById('overlay').innerText = JSON.stringify(grouped, null, 2)
       clearLayers();
       loadPointsLayer('http://localhost:8080/api/point/?lat=' + t[0] + '&lng=' + t[1], { featureProjection: 'EPSG:3857' })
-      loadRelatedLayer('http://localhost:8080/api/related/?lat=' + t[0] + '&lng=' + t[1] + '&fields=income_5064_mid,income_5064_med', { featureProjection: 'EPSG:3857' })
+      loadRelatedLayer('http://localhost:8080/api/related/?lat=' + t[0] + '&lng=' + t[1] + '&fields=' + g_fields.join(','), { featureProjection: 'EPSG:3857' })
     })
   }
 })
+
+var styleFunction = function (override, feature) {
+  var pr = feature.getProperties()
+
+  var amount = 0;
+  g_fields.forEach(function(k) {
+    amount += pr[k];
+  });
+
+  console.log('styleFunction', pr, g_fields, amount);
+
+  return styles[override || feature.getGeometry().getType()];
+};
 
 var map = new ol.Map({
   renderer: 'webgl',
