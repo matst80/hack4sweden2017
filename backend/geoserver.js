@@ -4,7 +4,17 @@ var proj4 = require('proj4');
 var express = require('express');
 var app = express();
 var bodyParser = require('body-parser');
-
+/*
+var Flickr = require('flickrapi');
+var flickr;
+Flickr.tokenOnly({
+    api_key: 'key',
+    secret: 'secret'
+}, function(err, flickrObj) {
+    console.log(err, flickrObj);
+    flickr = flickrObj;
+});
+*/
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(express.static('public'))
@@ -84,10 +94,6 @@ var files = [{
         file: '/testapp-po/src/data/industri.json',
         makeRadius: 0.004,
         //from: 'EPSG:3006'
-    },
-    {
-        file: '/testapp-po/src/data/rain.json',
-        from: 'EPSG:3006'
     }, {
         file: '/testapp-po/src/data/svavel.json',
         from: 'EPSG:2400'
@@ -98,6 +104,9 @@ var files = [{
 ];
 
 var readFiles = [];
+
+var excludedProperties = [];
+var allProperties = [];
 
 files.forEach(function(file) {
 
@@ -110,10 +119,25 @@ files.forEach(function(file) {
             file.data = convert(obj, file);
         else
             file.data = obj;
-
+        file.data.features.forEach(function(f) {
+            for (var prp in f.properties) {
+                if (excludedProperties.indexOf(prp) == -1) {
+                    var val = f.properties[prp];
+                    if (val && val - 0 == val) {
+                        if (!allProperties[prp]) {
+                            allProperties[prp] = {
+                                title: '',
+                                key: prp
+                            };
+                        }
+                    }
+                }
+            }
+        });
         if (readFiles.length == files.length) {
             //var found = findData(18.034, 59.09);
             console.log('laddat alla filer');
+            console.log(allProperties);
         }
     });
 });
@@ -155,6 +179,11 @@ function findData(lat, lng, radius) {
     //var completeResult = baseGeoResponse
     return ret;
 }
+
+router.route('/properties').get(function(req, res) {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.json(allProperties);
+});
 
 router.route('/point').get(function(req, res) {
     var lat = req.query.lat;
@@ -203,6 +232,26 @@ function findRelated(prps) {
     });
     return ret;
 }
+
+router.route('/newsimage').get(function(req, res) {
+    var q = req.query.q;
+    var lat = req.query.lat;
+    var lng = req.query.lng;
+
+    flickr.photos.search({
+        text: q,
+        page: 1,
+        per_page: 50,
+        lat: lat,
+        lng: lng
+    }, function(err, result) {
+        // result is Flickr's response
+        if (err)
+            res.json(err);
+        else
+            res.json(result);
+    });
+});
 
 router.route('/related').get(function(req, res) {
     var lat = req.query.lat;
