@@ -24,7 +24,7 @@ body {
     right: 10px;
     top: 10px;
     padding: 20px;
-    background-color: rgba(64,0,0,0.8);
+    background-color: rgba(64,0,0,1.0);
     color: #fff;
   }
 
@@ -52,7 +52,7 @@ body {
   #newsFrame {
     width: 379px;
     height: 213px;
-    z-index: 2;
+    z-index: 400;
     left: -25px;
     top: -12px;
     position: absolute;
@@ -64,7 +64,7 @@ body {
     left: 0px;
     top: 0px;
     position: absolute;
-    z-index: -2;
+    z-index: 300;
     opacity: 1.0 !important;
   }
 
@@ -170,7 +170,7 @@ body {
 #fake-news-title {
     color: white;
     font-size: 2em;
-    z-index: 200;
+    z-index: 900;
     bottom: 23px;
     position: absolute;
     left: 10px;
@@ -184,6 +184,7 @@ body {
     white-space: nowrap;
     overflow: hidden;
     box-sizing: border-box;
+    z-index: 800;
 }
 
 .marquee span {

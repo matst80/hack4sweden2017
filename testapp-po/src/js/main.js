@@ -17,7 +17,7 @@ function getPixelFeatures(px, py) {
     var agg = {};
     map.forEachFeatureAtPixel([px, py], function(f) {
       var prop = f.getProperties()
-      console.log('feature', prop)
+      //console.log('feature', prop)
       var propnames = Object.getOwnPropertyNames(prop)
       // var newdata = {}
       delete(prop.geometry)
@@ -26,18 +26,18 @@ function getPixelFeatures(px, py) {
       })
     })
     setTimeout(function(k) {
-      console.log('agg', agg)
+      //console.log('agg', agg)
       resolve(agg)
     }, 300)
   })
 }
 
 function clearLayers() {
-  console.log('map', map)
+  //console.log('map', map)
   var layers = map.getLayers()
-  console.log('layers', layers)
+  //console.log('layers', layers)
   var num = layers.getLength()
-  console.log('number of layers', num)
+  //console.log('number of layers', num)
   for (var i = num - 1; i >= 1; i--) {
     map.removeLayer(layers.item(i))
   }
@@ -47,12 +47,12 @@ function updateFilters() {
   var el = document.getElementById('menu');
   var sels = [];
   el.querySelectorAll('input').forEach(function(el2) {
-    console.log('el2', el2);
+    //console.log('el2', el2);
     if (el2.checked) {
       sels.push(el2.dataset.key)
     }
   });
-  console.log('selections', sels)
+  //console.log('selections', sels)
   // sels = 
   g_fields = sels;
   clearLayers();
@@ -64,9 +64,9 @@ function updateFilters() {
 window.updateFilters = updateFilters;
 
 fetch('/api/properties').then(function(response) {
-  console.log('response', response);
+  //console.log('response', response);
   response.json().then(function(json) {
-    console.log('json', json)
+    //console.log('json', json)
     g_metadata = json;
 
     var ht = '';
@@ -86,12 +86,12 @@ var g_metadata = {};
 var handler1 = new ol.interaction.Pointer({
   handleDownEvent: function(e) {
     var t = ol.proj.transform(e.coordinate, 'EPSG:3857', 'EPSG:4326')
-    console.log('click on', e.pixel, e.coordinate, t)
+    //console.log('click on', e.pixel, e.coordinate, t)
     clearLayers();
     loadRelatedLayer('/api/related/?lat=' + t[0] + '&lng=' + t[1] + '&fields=' + g_fields.join(','), { featureProjection: 'EPSG:3857' })
     loadPointsLayer('/api/point/?lat=' + t[0] + '&lng=' + t[1], { featureProjection: 'EPSG:3857' }).then(function(x) {
       getPixelFeatures(e.pixel[0], e.pixel[1]).then(function(clean) {
-        console.log('cleaned pixel features', clean)
+        //console.log('cleaned pixel features', clean)
         var grouped = groupIt(clean)
         document.getElementById('overlay').innerText = JSON.stringify(grouped, null, 2)
         overlay3.dispatchEvent(eventShow); //Show fake news
@@ -99,6 +99,7 @@ var handler1 = new ol.interaction.Pointer({
         var filteredData = grouped.sorted.filter(function(o){
           return (o.name !== "lanid" && o.name !== "admin_level");
         });
+
         if(filteredData[0] && filteredData[1]){
           var par1 = filteredData[0].key;
           var par2 = filteredData[1].key;
@@ -111,12 +112,11 @@ var handler1 = new ol.interaction.Pointer({
           var p50_2 = filteredData[1].p50;
           var sent1 = generateSentence(par1,par2,val1,val2,geo,p95_1,p50_1,p95_2,p50_2)
           populateFakeNews(sent1+".")
-          getFlickerImage("kommun", t[0], t[1])
+          getFlickerImage(geo, t[0], t[1])
           overlay3.dispatchEvent(eventShow) //Show fake news
         }
       })
     })
-    getFlickerImage("kommun", t[0], t[1]);
   }
 })
 
@@ -190,12 +190,12 @@ var map = new ol.Map({
 
 function loadGeoJsonLayer(url, proj, style, hidden) {
   fetch(url).then(function(response) {
-    console.log('response', response);
+    //console.log('response', response);
     response.json().then(function(json) {
-      console.log('json', json)
+      //console.log('json', json)
       var gj2 = new ol.format.GeoJSON()
       var features2 = gj2.readFeatures(json, proj)
-      console.log('features2', features2)
+      //console.log('features2', features2)
       var vectorSource2 = new ol.source.Vector({ features: features2 })
       var vectorLayer2 = new ol.layer.Vector({ source: vectorSource2, style: styleFunction.bind(this, style) })
       // vectorLayer2.setVisible(!(hidden || false))
@@ -207,9 +207,9 @@ function loadGeoJsonLayer(url, proj, style, hidden) {
 function loadPointsLayer(url, proj, style, hidden) {
   return new Promise(function(resolve, reject) {
     fetch(url).then(function(response) {
-      console.log('response', response);
+      //console.log('response', response);
       response.json().then(function(json) {
-        console.log('json', json)
+        //console.log('json', json)
 
         var fcollection = {
           type: 'FeatureCollection',
@@ -218,7 +218,7 @@ function loadPointsLayer(url, proj, style, hidden) {
 
         var gj2 = new ol.format.GeoJSON()
         var features2 = gj2.readFeatures(fcollection, proj)
-        console.log('features2', features2)
+        //console.log('features2', features2)
         var vectorSource2 = new ol.source.Vector({ features: features2 })
         var vectorLayer2 = new ol.layer.Vector({ source: vectorSource2, style: styleFunction.bind(this, style) })
         // vectorLayer2.setVisible(!(hidden || false))
@@ -232,7 +232,7 @@ function loadPointsLayer(url, proj, style, hidden) {
 function getFlickerImage(query, lat, lng){
   let url = "";
   fetch("/api/newsimage?q="+query+"&lat="+lat+"&lng="+lng).then(function(response) {
-    console.log('response', response);
+    //console.log('response', response);
     response.json().then(function(json){
       document.getElementById("newsImage").src = json.url;
       url.url = json.url;
@@ -262,9 +262,9 @@ function getFlickerImage(query, lat, lng){
 function loadRelatedLayer(url, proj, style, hidden) {
   var data = {};
   fetch(url).then(function(response) {
-    console.log('response', response);
+    //console.log('response', response);
     response.json().then(function(json) {
-      console.log('json', json)
+      //console.log('json', json)
 
       var fcollection = {
         type: 'FeatureCollection',
@@ -273,7 +273,7 @@ function loadRelatedLayer(url, proj, style, hidden) {
 
       var gj2 = new ol.format.GeoJSON()
       var features2 = gj2.readFeatures(fcollection, proj)
-      console.log('features2', features2)
+      //console.log('features2', features2)
       var vectorSource2 = new ol.source.Vector({ features: features2 })
       var vectorLayer2 = new ol.layer.Vector({ source: vectorSource2, style: styleFunction.bind(this, style) })
       // vectorLayer2.setVisible(!(hidden || false))
@@ -312,14 +312,14 @@ var eventHide = new CustomEvent('fake-news-hide', {bubbles: true, cancelable: tr
 var eventShow = new CustomEvent('fake-news-show', {bubbles: true, cancelable: true});
 
 overlay3.addEventListener("fake-news-hide", function(){
-  console.log("Fake news hide!!",this);
+  //console.log("Fake news hide!!",this);
   removeClass(this,"raise");
   addClass(this,"lower");
   
 });
 
 overlay3.addEventListener("fake-news-show", function(){
-  console.log("Fake news show!!",this);
+  //console.log("Fake news show!!",this);
   removeClass(this,"lower");
   addClass(this,"raise");
 });
