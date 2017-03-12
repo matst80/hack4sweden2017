@@ -112,6 +112,27 @@ var METADATA = JSON.parse(fs.readFileSync('./featuredata.json', 'utf-8'));
 var excludedProperties = ['ID', 'Id', 'CELL_ID', 'admin_level', 'lanid'];
 var allProperties = require('./propertytitlelist.json');
 
+var keys = {};
+
+for (i in allProperties) {
+    keys[i] = {
+        key: i,
+        title: i,
+        min: 999999999999999999999999999,
+        max: 0,
+        count: 0,
+        mid: 0,
+        total: 0,
+        values: []
+    };
+}
+
+function findPercentile(array, percentile) {
+    // http://stackoverflow.com/questions/24048879/how-can-i-calculate-the-nth-percentile-from-an-array-of-doubles-in-php
+    var index = Math.floor(percentile * array.length / 100.0);
+    var result = array[index];
+    return result;
+}
 
 files.forEach(function(file) {
 
@@ -124,9 +145,25 @@ files.forEach(function(file) {
             file.data = convert(obj, file);
         else
             file.data = obj;
+
+
+
         file.data.features.forEach(function(f) {
             for (var prp in f.properties) {
-                if (excludedProperties.indexOf(prp) == -1 && prp.indexOf(':') == -1 && prp.indexOf('_diff') == -1) {
+                var foundProperty = allProperties[prp];
+                if (foundProperty) {
+                    var obj = keys[prp];
+                    var val = f.properties[prp] - 0;
+                    if (typeof(val) == 'number') {
+                        obj.min = Math.min(obj.min, val);
+                        obj.max = Math.min(obj.max, val);
+                        obj.total += val;
+                        obj.count++;
+                        obj.values.push(val);
+                    }
+
+                }
+                /*if (excludedProperties.indexOf(prp) == -1 && prp.indexOf(':') == -1 && prp.indexOf('_diff') == -1) {
                     var val = f.properties[prp];
                     if (val && val - 0 == val) {
                         if (!allProperties[prp]) {
@@ -136,13 +173,45 @@ files.forEach(function(file) {
                             };
                         }
                     }
-                }
+                }*/
             }
         });
         if (readFiles.length == files.length) {
             //var found = findData(18.034, 59.09);
             console.log('laddat alla filer');
-            console.log(allProperties);
+            for (var prp in keys) {
+                var o = keys[prp];
+                o.values.sort(function(a, b) {
+                    return a - b;
+                });
+                o.mid = o.total / o.count;
+                o.p50 = findPercentile(o.values, 50.0);
+                o.p75 = findPercentile(o.values, 75.0);
+                o.p90 = findPercentile(o.values, 90.0);
+                o.p95 = findPercentile(o.values, 95.0);
+                o.p99 = findPercentile(o.values, 99.0);
+                var field = allProperties[prp];
+                field.avg = o.mid
+                field.min = o.min
+                field.max = o.max
+                field.p50 = o.p50
+                field.p75 = o.p75
+                field.p90 = o.p90
+                field.p95 = o.p95
+                field.p99 = o.p99
+            }
+            files.forEach(function(loadeddata) {
+                file.data.features.forEach(function(f) {
+                    for (var prp in f.properties) {
+                        var val = f.properties[prp];
+                        var foundProperty = keys[prp];
+                        if (foundProperty && val) {
+                            var diff = Math.abs(foundProperty.p90 - val);
+                            f.properties[i + '_diff'] = diff;
+                        }
+                    }
+                });
+            });
         }
     });
 });
@@ -187,7 +256,7 @@ function findData(lat, lng, radius) {
 
 router.route('/properties').get(function(req, res) {
     res.setHeader('Access-Control-Allow-Origin', '*');
-    var ret = {};
+    /*var ret = {};
 
     var keys = Object.keys(allProperties);
     keys.forEach(function(key) {
@@ -209,8 +278,8 @@ router.route('/properties').get(function(req, res) {
         });
         ret[key] = field;
     });
-
-    res.json(ret);
+*/
+    res.json(allProperties);
 });
 
 router.route('/point').get(function(req, res) {

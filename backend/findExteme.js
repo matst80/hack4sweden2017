@@ -7,7 +7,6 @@ function findPercentile(array, percentile) {
     // http://stackoverflow.com/questions/24048879/how-can-i-calculate-the-nth-percentile-from-an-array-of-doubles-in-php
     var index = Math.floor(percentile * array.length / 100.0);
     var result = array[index];
-    console.log(percentile, index, array.length, result)
     return result;
 }
 
