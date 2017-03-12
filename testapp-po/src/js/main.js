@@ -105,10 +105,36 @@ var styleFunction = function (override, feature) {
   g_fields.forEach(function(k) {
     amount += pr[k] / g_metadata[k].p99;
   });
+  if (g_fields.length > 0) {
+    amount /= g_fields.length;
+  }
 
   console.log('styleFunction', pr, g_fields, amount);
 
-  return styles[override || feature.getGeometry().getType()];
+  if (amount > 0.7) { amount = 0.7; }
+  if (amount < 0.0) { amount = 0.0; }
+
+  return new ol.style.Style({
+    // stroke: new ol.style.Stroke({
+    //   color: 'rgba(0, 0, 0, 0)',
+    //   width: 0
+    // }),
+    fill: new ol.style.Fill({
+      color: 'rgba(255, 255, 255, ' + amount + ')'
+    })
+  })
+
+  // 'Polygon': new ol.style.Style({
+  //   stroke: new ol.style.Stroke({
+  //     color: 'blue',
+  //     lineDash: [4],
+  //     width: 3
+  //   }),
+  //   fill: new ol.style.Fill({
+  //     color: 'rgba(0, 0, 255, 0.1)'
+  //   })
+  // }),
+  // return styles[override || feature.getGeometry().getType()];
 };
 
 var map = new ol.Map({
