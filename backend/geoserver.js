@@ -356,20 +356,34 @@ router.route('/related').get(function(req, res) {
     var fields = req.query.fields.toString().split(',');
     var prps = {};
     console.log(req.params);
-    findData(lat, lng).forEach(function(itm) {
-        console.log(itm);
 
-
+    if (lat && lng) {
+        findData(lat, lng).forEach(function(itm) {
+            console.log(itm);
+            for (var prpidx in fields) {
+                var prp = fields[prpidx];
+                var val = itm.properties[prp];
+                if (val)
+                    prps[prp] = val;
+                console.log(prp, val);
+            }
+        });
+    } else {
         for (var prpidx in fields) {
             var prp = fields[prpidx];
-            var val = itm.properties[prp];
-            if (val)
-                prps[prp] = val;
+            var val = 0;
+            // if (val)
+            METADATA.forEach(function(md) {
+                if (md.key == prp) {
+                    val = md.p99;
+                }
+            })
+            prps[prp] = val;
             console.log(prp, val);
         }
+    }
 
 
-    });
     console.log('matchar på', prps);
     var ret = {
         found: prps,
