@@ -9,7 +9,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(express.static('public'))
 
-var baseGeoResponse = {"type":"FeatureCollection","crs":{"type":"name","properties":{"name":"urn:ogc:def:crs:EPSG::3006"}},"features":[]};
+var baseGeoResponse = { "type": "FeatureCollection", "crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:EPSG::3006" } }, "features": [] };
 
 var router = express.Router();
 
@@ -184,7 +184,7 @@ function findRelated(prps) {
                     var val = f.properties[prp];
                     var filterVal = prps[prp];
                     if (filterVal) {
-                        if (filterVal * 0.7 < val && filterVal * 1.3 > val) {
+                        if (filterVal * 0.85 < val && filterVal * 1.15 > val) {
                             console.log('found');
                         } else
                             found = false;
