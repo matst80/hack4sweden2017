@@ -105,7 +105,10 @@ var files = [{
 
 var readFiles = [];
 
+var METADATA = JSON.parse(fs.readFileSync('./featuredata.json', 'utf-8'));
+
 var excludedProperties = ['ID', 'Id', 'CELL_ID', 'admin_level'];
+
 var allProperties = {
     Ozonvalue: { title: '', key: 'Ozonvalue' },
     admin_level: { title: '', key: 'admin_level' },
@@ -237,7 +240,30 @@ function findData(lat, lng, radius) {
 
 router.route('/properties').get(function(req, res) {
     res.setHeader('Access-Control-Allow-Origin', '*');
-    res.json(allProperties);
+    var ret = {};
+
+    var keys = Object.keys(allProperties);
+    keys.forEach(function(key) {
+        // console.log('key', key);
+        var field = allProperties[key];
+        var field2 = null;
+        METADATA.forEach(function(md) {
+            if (md.key == key) {
+                field2 = md;
+                field.avg = md.mid
+                field.min = md.min
+                field.max = md.max
+                field.p50 = md.p50
+                field.p75 = md.p75
+                field.p90 = md.p90
+                field.p95 = md.p95
+                field.p99 = md.p99
+            }
+        });
+        ret[key] = field;
+    });
+
+    res.json(ret);
 });
 
 router.route('/point').get(function(req, res) {
