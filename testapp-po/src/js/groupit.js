@@ -8,6 +8,8 @@ module.exports = function(allinput, metadata) {
     //delete(input.lanid)
     allinput.forEach(function(input) {
         //console.log('thisinput', input);
+        if (input.properties.name)
+            grouped.name = input.properties.name;
         for (var key in metadata) {
             var md = metadata[key];
             if (input.properties[key]) {
@@ -18,7 +20,7 @@ module.exports = function(allinput, metadata) {
                         name: md.title,
                         value: v,
                     };
-                    console.log("MD", md, v);
+                    //console.log("MD", md, v);
                     fieldinfo.diff = v - md.avg
                         //fieldinfo.diffpct = ((v - md.mid) - md.min) / (md.max - md.min)
                     fieldinfo.diffpct = fieldinfo.diff / md.avg;

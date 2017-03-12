@@ -96,7 +96,7 @@ var handler1 = new ol.interaction.Pointer({
         loadPointsLayer('/api/point/?lat=' + t[0] + '&lng=' + t[1], { featureProjection: 'EPSG:3857' }, null, false, function(clean) {
 
             var grouped = groupIt(clean, g_metadata);
-            g_fields = [grouped.sorted[0].key,grouped.sorted[grouped.sorted.length-1].key];
+            g_fields = [grouped.sorted[0].key, grouped.sorted[grouped.sorted.length - 1].key];
             popupparser({ elm: document.getElementById('overlay'), data: grouped })
                 //document.getElementById('overlay').innerText = JSON.stringify(grouped, null, 2)
             overlay3.dispatchEvent(eventShow); //Show fake news
@@ -106,12 +106,12 @@ var handler1 = new ol.interaction.Pointer({
             });
 */
             if (filteredData[0] && filteredData[1]) {
-                console.log(filteredData);
+                
                 var par1 = filteredData[0].key;
                 var par2 = filteredData[1].key;
                 var val1 = filteredData[0].value;
                 var val2 = filteredData[1].value;
-                var geo = clean.name;
+                var geo = grouped.name;
                 var p95_1 = filteredData[0].p95;
                 var p50_1 = filteredData[0].p50;
                 var p95_2 = filteredData[1].p95;
