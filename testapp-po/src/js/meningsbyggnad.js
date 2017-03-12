@@ -51,8 +51,8 @@ meningsbyggnad = {
     "tax_hyreshus_bostader": "taxeringsvärde för hyreshus",
     "tax_hyreshus_bostader_lokaler": "taxexirsvärde för lokaler",
     "tax_hotell_restaurang": "taxeringsvärde för hotell och restaurang",
-    "hyreshusenhet_lokaler": "trump",
-    "tax_other": "skatt",
+    "hyreshusenhet_lokaler": "Hyreshusenheter",
+    "tax_other": "Betald skatt",
     "ozone": "marknära ozon",
     "sulfur": "svavelutsläpp"
 };
@@ -107,7 +107,6 @@ function getDirWord2(up) {
 generateSentence = function(param1, param2, val1, val2, geo, p95_1, p50_1, p95_2, p50_2) {
     var par1 = meningsbyggnad[param1];
     var par2 = meningsbyggnad[param2];
-    console.log("AAA");
 
     var sentences = [];
 
@@ -118,7 +117,6 @@ generateSentence = function(param1, param2, val1, val2, geo, p95_1, p50_1, p95_2
     var f2 = "";
     var f3 = "";
 
-    console.log("BBB");
     if ((up1 && up2) || (!up1 && !up2)) {
         f1 = capitalizeFirstLetter(par1) + " och " + par2 + " " + getDirWord2(up1) + " i " + geo;
         f2 = capitalizeFirstLetter(getDirWord1(up1)) + " " + par1 + " och " + getDirWord1(up2) + " " + par2 + " i " + geo;
@@ -135,7 +133,6 @@ generateSentence = function(param1, param2, val1, val2, geo, p95_1, p50_1, p95_2
         f3 = capitalizeFirstLetter(par1) + " " + getDirWord2(up1) + " i " + geo;
     }
 
-    console.log("CCC");
     // f2 = capitalizeFirstLetter(param2)+"  "+getDirWord(up)
     // f3 = capitalizeFirstLetter(param3)+"  "+getDirWord(up)
     // f4 = capitalizeFirstLetter(param4)+"  "+getDirWord(up)
@@ -152,7 +149,6 @@ generateSentence = function(param1, param2, val1, val2, geo, p95_1, p50_1, p95_2
     sentences.push(f2);
     sentences.push(f3);
     var index = Math.floor(Math.random() * sentences.length);
-    console.log("DDD");
     return sentences[index];
 }
 
@@ -180,5 +176,4 @@ function main() {
 
     var res = generateSentence(randParam1, randParam2, randVal1, randVal2, geo, p95_1, p50_1, p95_2, p50_2);
     var indexRes = Math.floor(Math.random() * res.length);
-    console.log(res[indexRes]);
 }

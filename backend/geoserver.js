@@ -199,7 +199,7 @@ files.forEach(function(file) {
                 field.p95 = o.p95
                 field.p99 = o.p99
             }
-            files.forEach(function(loadeddata) {
+            //files.forEach(function(loadeddata) {
                 file.data.features.forEach(function(f) {
                     for (var prp in f.properties) {
                         var val = f.properties[prp];
@@ -210,7 +210,7 @@ files.forEach(function(file) {
                         }
                     }
                 });
-            });
+            //});
         }
     });
 });
@@ -369,8 +369,13 @@ router.route('/newsimage').get(function(req, res) {
             //console.log(result.photos);
             var fotodata = result.photos.photo[Math.floor(Math.random() * result.photos.photo.length - 1) + 1];
             //console.log(fotodata);
-            var url = "https://farm" + fotodata.farm + ".staticflickr.com/" + fotodata.server + "/" + fotodata.id + "_" + fotodata.secret + ".jpg";
-            res.json({ url: url, data: fotodata });
+            if(fotodata.farm && fotodata.server && fotodata.id && fotodata.secret){
+                var url = "https://farm" + fotodata.farm + ".staticflickr.com/" + fotodata.server + "/" + fotodata.id + "_" + fotodata.secret + ".jpg";
+                res.json({ url: url, data: fotodata });
+            }
+            else{
+                res.cancel();
+            }
         }
     });
 });

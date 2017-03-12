@@ -55,6 +55,7 @@ function updateFilters() {
   //console.log('selections', sels)
   // sels = 
   g_fields = sels;
+  overlay3.dispatchEvent(eventHide); //Hide fake news
   clearLayers();
   if (g_fields.length > 0) {
     loadRelatedLayer('/api/related/?fields=' + g_fields.join(','), { featureProjection: 'EPSG:3857' })
@@ -80,7 +81,7 @@ fetch('/api/properties').then(function(response) {
   })
 })
 
-var g_fields = ['income_5064_mid', 'income_5064_med'];
+var g_fields = [];
 var g_metadata = {};
 
 var handler1 = new ol.interaction.Pointer({
@@ -122,6 +123,7 @@ var handler1 = new ol.interaction.Pointer({
 
 var styleFunction = function (override, feature) {
   var pr = feature.getProperties()
+  console.log(pr)
 
   var amount = 0;
 
