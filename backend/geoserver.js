@@ -319,7 +319,8 @@ function findRelated(prps) {
                     }
                 }
                 if (found) {
-                    ret.push(f);
+                    if (ret.indexOf(f) == -1)
+                        ret.push(f);
                 }
             });
         }
@@ -327,7 +328,7 @@ function findRelated(prps) {
     var mins = {};
     var maxs = {};
     ret.forEach(function(f) {
-        for (var prp in prps) { 
+        for (var prp in prps) {
             var val = f.properties[prp] || 0;
             mins[prp] = Math.min(mins[prp] || 999999999999999, val)
             maxs[prp] = Math.max(maxs[prp] || 0, val)
@@ -369,11 +370,10 @@ router.route('/newsimage').get(function(req, res) {
             //console.log(result.photos);
             var fotodata = result.photos.photo[Math.floor(Math.random() * result.photos.photo.length - 1) + 1];
             //console.log(fotodata);
-            if(fotodata.farm && fotodata.server && fotodata.id && fotodata.secret){
+            if (fotodata.farm && fotodata.server && fotodata.id && fotodata.secret) {
                 var url = "https://farm" + fotodata.farm + ".staticflickr.com/" + fotodata.server + "/" + fotodata.id + "_" + fotodata.secret + ".jpg";
                 res.json({ url: url, data: fotodata });
-            }
-            else{
+            } else {
                 res.cancel();
             }
         }

@@ -93,34 +93,39 @@ var handler1 = new ol.interaction.Pointer({
             //console.log('click on', e.pixel, e.coordinate, t)
         clearLayers();
         loadRelatedLayer('/api/related/?lat=' + t[0] + '&lng=' + t[1] + '&fields=' + g_fields.join(','), { featureProjection: 'EPSG:3857' })
-        loadPointsLayer('/api/point/?lat=' + t[0] + '&lng=' + t[1], { featureProjection: 'EPSG:3857' }).then(function(x) {
-            getPixelFeatures(e.pixel[0], e.pixel[1]).then(function(clean) {
-                //console.log('cleaned pixel features', clean)
-                var grouped = groupIt(clean, g_metadata)
-                popupparser({elm:document.getElementById('overlay'),data:grouped})
-                    //document.getElementById('overlay').innerText = JSON.stringify(grouped, null, 2)
-                overlay3.dispatchEvent(eventShow); //Show fake news
+        loadPointsLayer('/api/point/?lat=' + t[0] + '&lng=' + t[1], { featureProjection: 'EPSG:3857' }, null, false, function(clean) {
 
-                var filteredData = grouped.sorted.filter(function(o) {
-                    return (o.name !== "lanid" && o.name !== "admin_level");
-                });
+            var grouped = groupIt(clean, g_metadata);
+            g_fields = [grouped.sorted[0].key,grouped.sorted[grouped.sorted.length-1].key];
+            popupparser({ elm: document.getElementById('overlay'), data: grouped })
+                //document.getElementById('overlay').innerText = JSON.stringify(grouped, null, 2)
+            overlay3.dispatchEvent(eventShow); //Show fake news
+            var filteredData = grouped.sorted;
+            /*var filteredData = grouped.sorted.filter(function(o) {
+                return (o.name !== "lanid" && o.name !== "admin_level");
+            });
+*/
+            if (filteredData[0] && filteredData[1]) {
+                console.log(filteredData);
+                var par1 = filteredData[0].key;
+                var par2 = filteredData[1].key;
+                var val1 = filteredData[0].value;
+                var val2 = filteredData[1].value;
+                var geo = clean.name;
+                var p95_1 = filteredData[0].p95;
+                var p50_1 = filteredData[0].p50;
+                var p95_2 = filteredData[1].p95;
+                var p50_2 = filteredData[1].p50;
+                var sent1 = generateSentence(par1, par2, val1, val2, geo, p95_1, p50_1, p95_2, p50_2)
+                populateFakeNews(sent1 + ".")
+                getFlickerImage(geo, t[0], t[1])
+                overlay3.dispatchEvent(eventShow) //Show fake news
+            }
+        }).then(function(x) {
 
-                if (filteredData[0] && filteredData[1]) {
-                    var par1 = filteredData[0].key;
-                    var par2 = filteredData[1].key;
-                    var val1 = filteredData[0].value;
-                    var val2 = filteredData[1].value;
-                    var geo = clean.name;
-                    var p95_1 = filteredData[0].p95;
-                    var p50_1 = filteredData[0].p50;
-                    var p95_2 = filteredData[1].p95;
-                    var p50_2 = filteredData[1].p50;
-                    var sent1 = generateSentence(par1, par2, val1, val2, geo, p95_1, p50_1, p95_2, p50_2)
-                    populateFakeNews(sent1 + ".")
-                    getFlickerImage(geo, t[0], t[1])
-                    overlay3.dispatchEvent(eventShow) //Show fake news
-                }
-            })
+            //getPixelFeatures(e.pixel[0], e.pixel[1]).then(function(clean) {
+
+            //})
         })
     }
 })
@@ -131,7 +136,10 @@ var styleFunction = function(override, feature) {
     var amount = 0;
 
     g_fields.forEach(function(k) {
-        var k2 = k + '_normalized'
+        var k2 = k + '_normalized';
+        if (!pr[k2]) {
+            k2 = k;
+        }
         if (pr[k2]) {
             amount += pr[k2] * pr[k2]
         }
@@ -209,7 +217,7 @@ function loadGeoJsonLayer(url, proj, style, hidden) {
     });
 }
 
-function loadPointsLayer(url, proj, style, hidden) {
+function loadPointsLayer(url, proj, style, hidden, cb) {
     return new Promise(function(resolve, reject) {
         fetch(url).then(function(response) {
             //console.log('response', response);
@@ -220,15 +228,18 @@ function loadPointsLayer(url, proj, style, hidden) {
                     type: 'FeatureCollection',
                     features: json
                 };
-
+                //console.log('got jsondata', json);
+                if (cb)
+                    cb(json);
                 var gj2 = new ol.format.GeoJSON()
                 var features2 = gj2.readFeatures(fcollection, proj)
                     //console.log('features2', features2)
                 var vectorSource2 = new ol.source.Vector({ features: features2 })
                 var vectorLayer2 = new ol.layer.Vector({ source: vectorSource2, style: styleFunction.bind(this, style) })
                     // vectorLayer2.setVisible(!(hidden || false))
+                    //console.log(fcollection);
                 map.addLayer(vectorLayer2)
-                setTimeout(resolve, 200);
+                resolve();
             });
         });
     });
