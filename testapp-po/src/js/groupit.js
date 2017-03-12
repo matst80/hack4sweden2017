@@ -860,7 +860,7 @@ module.exports = function(input) {
 
     delete(input.geometry)
     delete(input.admin_level)
-    // delete(input.geometry)
+    delete(input.lanid)
 
     METADATA.forEach(function(md) {
         // console.log('md', md)
@@ -871,11 +871,13 @@ module.exports = function(input) {
                 name: md.title,
                 value: v,
             };
-            fieldinfo.diff = v - md.p95
-            fieldinfo.diffpct = ((v - md.p95) - md.min) / (md.max - md.min)
+            console.log("MD",md);
+            fieldinfo.diff = v - md.mid
+            //fieldinfo.diffpct = ((v - md.mid) - md.min) / (md.max - md.min)
+            fieldinfo.diffpct = fieldinfo.diff/md.mid;
             fieldinfo.absdiffpct = Math.abs(fieldinfo.diffpct)
             fieldinfo.min = md.min
-            fieldinfo.avg = md.p95
+            fieldinfo.avg = md.mid
             fieldinfo.max = md.max
             fieldinfo.p95 = md.p95
             fieldinfo.p50 = md.p50

@@ -199,8 +199,8 @@ files.forEach(function(file) {
                 field.p95 = o.p95
                 field.p99 = o.p99
             }
-            //files.forEach(function(loadeddata) {
-                file.data.features.forEach(function(f) {
+            files.forEach(function(loadeddata) {
+                loadeddata.data.features.forEach(function(f) {
                     for (var prp in f.properties) {
                         var val = f.properties[prp];
                         var foundProperty = keys[prp];
@@ -210,7 +210,7 @@ files.forEach(function(file) {
                         }
                     }
                 });
-            //});
+            });
         }
     });
 });

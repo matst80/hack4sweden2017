@@ -123,7 +123,6 @@ var handler1 = new ol.interaction.Pointer({
 
 var styleFunction = function (override, feature) {
   var pr = feature.getProperties()
-  console.log(pr)
 
   var amount = 0;
 
