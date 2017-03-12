@@ -43,7 +43,45 @@ function clearLayers() {
   }
 }
 
+function updateFilters() {
+  var el = document.getElementById('menu');
+  var sels = [];
+  el.querySelectorAll('input').forEach(function(el2) {
+    console.log('el2', el2);
+    if (el2.checked) {
+      sels.push(el2.dataset.key)
+    }
+  });
+  console.log('selections', sels)
+  // sels = 
+  g_fields = sels;
+  clearLayers();
+  if (g_fields.length > 0) {
+    loadRelatedLayer('/api/related/?fields=' + g_fields.join(','), { featureProjection: 'EPSG:3857' })
+  }
+}
+
+window.updateFilters = updateFilters;
+
+fetch('/api/properties').then(function(response) {
+  console.log('response', response);
+  response.json().then(function(json) {
+    console.log('json', json)
+    g_metadata = json;
+
+    var ht = '';
+
+    Object.keys(json).forEach(function(key) {
+      var md = json[key];
+      ht += '<p><label><input type="checkbox" id="filter-' + md.key + '" data-key="' + md.key + '" onClick="updateFilters()" /> ' + (md.title || md.key) + '</label></p>';
+    });
+
+    document.getElementById('menu').innerHTML = ht;
+  })
+})
+
 var g_fields = ['income_5064_mid', 'income_5064_med'];
+var g_metadata = {};
 
 var handler1 = new ol.interaction.Pointer({
   handleDownEvent: function(e) {
@@ -54,8 +92,8 @@ var handler1 = new ol.interaction.Pointer({
       var grouped = groupIt(clean)
       document.getElementById('overlay').innerText = JSON.stringify(grouped, null, 2)
       clearLayers();
-      loadPointsLayer('http://localhost:8080/api/point/?lat=' + t[0] + '&lng=' + t[1], { featureProjection: 'EPSG:3857' })
-      loadRelatedLayer('http://localhost:8080/api/related/?lat=' + t[0] + '&lng=' + t[1] + '&fields=' + g_fields.join(','), { featureProjection: 'EPSG:3857' })
+      loadRelatedLayer('/api/related/?lat=' + t[0] + '&lng=' + t[1] + '&fields=' + g_fields.join(','), { featureProjection: 'EPSG:3857' })
+      loadPointsLayer('/api/point/?lat=' + t[0] + '&lng=' + t[1], { featureProjection: 'EPSG:3857' })
     })
   }
 })
@@ -65,7 +103,7 @@ var styleFunction = function (override, feature) {
 
   var amount = 0;
   g_fields.forEach(function(k) {
-    amount += pr[k];
+    amount += pr[k] / g_metadata[k].p99;
   });
 
   console.log('styleFunction', pr, g_fields, amount);
