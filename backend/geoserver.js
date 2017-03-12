@@ -9,6 +9,8 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(express.static('public'))
 
+var baseGeoResponse = {"type":"FeatureCollection","crs":{"type":"name","properties":{"name":"urn:ogc:def:crs:EPSG::3006"}},"features":[]};
+
 var router = express.Router();
 
 proj4.defs("EPSG:3006", "+proj=utm +zone=33 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs")
@@ -150,6 +152,7 @@ function findData(lat, lng, radius) {
             }
         }
     });
+    //var completeResult = baseGeoResponse
     return ret;
 }
 
