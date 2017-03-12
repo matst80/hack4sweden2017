@@ -337,7 +337,7 @@ router.route('/newsimage').get(function(req, res) {
     flickr.photos.search({
         text: q,
         page: 1,
-        accuracy: 6,
+        //accuracy: 6,
         per_page: 50,
         content_type: 1,
         radius: 10,
@@ -348,10 +348,10 @@ router.route('/newsimage').get(function(req, res) {
         if (err)
             res.json(err);
         else {
-
-            var fotodata = result.photos.photo[0];
-            console.log(fotodata);
-            var url = "https://farm" + fotodata.farm + ".staticflickr.com/"+fotodata.server+"/"+fotodata.id+"_"+fotodata.secret+".jpg";
+            //console.log(result.photos);
+            var fotodata = result.photos.photo[Math.floor(Math.random() * result.photos.photo.length - 1) + 1];
+            //console.log(fotodata);
+            var url = "https://farm" + fotodata.farm + ".staticflickr.com/" + fotodata.server + "/" + fotodata.id + "_" + fotodata.secret + ".jpg";
             res.json({ url: url, data: fotodata });
         }
     });
